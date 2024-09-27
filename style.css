@@ -1,0 +1,53 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    text-align: center;
+}
+
+header {
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    padding: 10px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+/* Navigation bar styles */
+.navbar {
+    list-style-type: none; /* Remove bullets from list */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333; /* Dark background for navbar */
+}
+
+/* Each list item */
+.navbar li {
+    float: left; /* Align tabs horizontally */
+}
+
+/* Style for the links in the navbar */
+.navbar li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+/* Change the background color of links on hover */
+.navbar li a:hover {
+    background-color: #111; /* Darker background on hover */
+}
+
+/* Style for active/current page (optional) */
+.navbar li a.active {
+    background-color: #4CAF50; /* Match the header background */
+}
