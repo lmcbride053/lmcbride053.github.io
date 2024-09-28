@@ -57,3 +57,21 @@ h1 {
 .navbar li a.active {
     background-color: #4CAF50; /* Match the header background */
 }
+
+h2 {
+    position: fixed;
+    bottom: 10px;  /* Fixes the text to the bottom of the viewport */
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+p {
+    position: fixed;
+    bottom: 10px;  /* Fixes the text to the bottom of the viewport */
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+
