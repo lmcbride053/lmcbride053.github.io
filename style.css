@@ -13,8 +13,10 @@ body {
 }
 
 header {
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for readability */
+    background-color: #000080; /* Solid color background */
+    opacity: 0.5;              /* 0 = fully transparent, 1 = fully opaque */
     padding: 20px;
+    color: white;              /* Text color */
 }
 
 h1 {
