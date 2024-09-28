@@ -1,16 +1,20 @@
 /* General Styles */
 body {
+    background-image: url('images/background.jpg');  /* Path to your image */
+    background-size: cover;       /* Make the image cover the whole screen */
+    background-position: center;  /* Center the image */
+    background-repeat: no-repeat; /* Don't repeat the image */
+    background-attachment: fixed; /* Make the image stay in place when scrolling */
+   
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
     text-align: center;
 }
 
 header {
-    background-color: #8ACE00; /* Brat Green background */
-    color: Black;
-    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for readability */
+    padding: 20px;
 }
 
 h1 {
