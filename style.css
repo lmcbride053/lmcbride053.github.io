@@ -60,16 +60,16 @@ h1 {
 
 h2 {
     position: fixed;
-    bottom: 100px;  /* Fixes the text to the bottom of the viewport */
-    left: 35;
+    bottom: 500px;  /* Fixes the text to the bottom of the viewport */
+    left: 20;
     right: 0;
     text-align: center;
 }
 
 p {
     position: fixed;
-    bottom: 90px;  /* Fixes the text to the bottom of the viewport */
-    left: 35;
+    bottom: 480px;  /* Fixes the text to the bottom of the viewport */
+    left: 20;
     right: 0;
     text-align: center;
 }
