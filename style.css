@@ -17,6 +17,7 @@ header {
     padding: 20px;
     color: white;              /* Text color */
     font-family: Palatino, serif;
+    border: 5px white;
 }
 
 h1 {
@@ -30,7 +31,6 @@ h1 {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    border: 5px white;
 }
 
 /* Each list item */
