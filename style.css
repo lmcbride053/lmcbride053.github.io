@@ -16,13 +16,20 @@ header {
     opacity: 0.8;              /* 0 = fully transparent, 1 = fully opaque */
     padding: 20px;
     color: white;              /* Text color */
-    font-family: Palatino, serif;
+    font-family: Apple Chancery, cursive;
     border: 5px white;
 }
 
 h1 {
+    position: fixed;
+    bottom: 550px;  /* Fixes the text to the bottom of the viewport */
     margin: 0;
     font-size: 36px;
+    color: white;
+    left: 0;
+    right: 0;
+    text-align: center;
+    
 }
 
 /* Navigation bar styles */
