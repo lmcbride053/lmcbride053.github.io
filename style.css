@@ -30,7 +30,7 @@ h1 {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    outline: 3px white;
+    outline: 10px white;
 }
 
 /* Each list item */
