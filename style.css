@@ -13,10 +13,10 @@ body {
 }
 
 header {
-    background-color: #000080; /* Solid color background */
-    opacity: 0.3;              /* 0 = fully transparent, 1 = fully opaque */
+    opacity: 0.8;              /* 0 = fully transparent, 1 = fully opaque */
     padding: 20px;
     color: white;              /* Text color */
+    font-family: Palatino, serif;
 }
 
 h1 {
