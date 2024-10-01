@@ -16,7 +16,7 @@ header {
     opacity: 0.8;              /* 0 = fully transparent, 1 = fully opaque */
     padding: 20px;
     color: white;              /* Text color */
-    font-family: Apple Chancery, cursive;
+    font-family: Palantino, serif;
     border: 5px white;
 }
 
@@ -29,7 +29,7 @@ h1 {
     left: 0;
     right: 0;
     text-align: center;
-    
+    font-family: Apple Chancery, cursive;
 }
 
 /* Navigation bar styles */
