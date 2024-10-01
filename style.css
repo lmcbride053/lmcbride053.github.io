@@ -5,7 +5,6 @@ body {
     background-position: center;  /* Center the image */
     background-repeat: no-repeat; /* Don't repeat the image */
     background-attachment: fixed; /* Make the image stay in place when scrolling */
-   
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -16,7 +15,7 @@ header {
     opacity: 0.8;              /* 0 = fully transparent, 1 = fully opaque */
     padding: 20px;
     color: white;              /* Text color */
-    font-family: Palantino, serif;
+    font-family: Palatino, serif;
     border: 5px white;
 }
 
@@ -38,6 +37,7 @@ h1 {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    font-family: Palatino, serif;
 }
 
 /* Each list item */
