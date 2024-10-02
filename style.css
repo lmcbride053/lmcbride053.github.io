@@ -68,8 +68,8 @@ h1 {
 h2 {
     position: fixed;
     bottom: 500px;  /* Fixes the text to the bottom of the viewport */
-    left: 30;
-    right: -30;
+    left: 40;
+    right: 0;
     text-align: center;
     font-size: 25px;
 }
