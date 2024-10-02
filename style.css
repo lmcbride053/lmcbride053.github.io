@@ -26,7 +26,6 @@ h1 {
     font-size: 36px;
     color: white;
     left: 30;
-    right: 10;
     text-align: center;
     font-family: Apple Chancery, cursive;
 }
@@ -69,7 +68,6 @@ h2 {
     position: fixed;
     bottom: 500px;  /* Fixes the text to the bottom of the viewport */
     left: 40;
-    right: 10;
     text-align: center;
     font-size: 25px;
 }
@@ -78,8 +76,8 @@ p {
     position: fixed;
     bottom: 480px;  /* Fixes the text to the bottom of the viewport */
     left: 40;
-    right: 10;
     text-align: center;
+    text-wrap: wrap;
 }
 
 
