@@ -25,9 +25,10 @@ h1 {
     margin: 0;
     font-size: 36px;
     color: white;
-    left: 30;
-    text-align: center;
+    text-align: left;
+    margin-left: 15px; 
     font-family: Apple Chancery, cursive;
+    
 }
 
 /* Navigation bar styles */
@@ -67,16 +68,16 @@ h1 {
 h2 {
     position: fixed;
     bottom: 500px;  /* Fixes the text to the bottom of the viewport */
-    left: 40;
-    text-align: center;
+    margin-left: 15px; 
+    text-align: left;
     font-size: 25px;
 }
 
 p {
     position: fixed;
     bottom: 480px;  /* Fixes the text to the bottom of the viewport */
-    left: 40;
-    text-align: center;
+    margin-left: 15px; 
+    text-align: left;
     text-wrap: wrap;
 }
 
