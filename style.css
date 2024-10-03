@@ -20,9 +20,9 @@ header {
 }
 
 h1 {
-    position: relative;
-    bottom: 550px;  /* Fixes the text to the bottom of the viewport */
-    margin: 0 0 0 15px;  /* Combine margin reset */
+    position: fixed;  /* or absolute if you want them to be inside a specific container */
+    bottom: 50px;     /* Adjust the exact position as needed */
+    margin-left: 15px;
     font-size: 36px;
     color: white;
     text-align: left;
@@ -30,16 +30,16 @@ h1 {
 }
 
 h2 {
-    position: relative;
-    bottom: 500px;
+    position: fixed;  /* or absolute if you want them to be inside a specific container */
+    bottom: 50px;     /* Adjust the exact position as needed */
     margin-left: 15px;
     text-align: left;
     font-size: 25px;
 }
 
 p {
-    position: relative;
-    bottom: 480px;
+    position: fixed;  /* or absolute if you want them to be inside a specific container */
+    bottom: 50px;     /* Adjust the exact position as needed */
     margin-left: 15px;
     text-align: left;
     word-wrap: break-word;  /* Correct text wrapping */
@@ -78,6 +78,5 @@ p {
 .navbar li a.active {
     background-color: #4CAF50; /* Match the header background */
 }
-
 
 
