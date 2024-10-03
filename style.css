@@ -16,7 +16,7 @@ header {
     padding: 20px;
     color: white;              /* Text color */
     font-family: Palatino, serif;
-    border: 3px solid white;   /* Correct border syntax */
+    border: 1px solid white;   /* Correct border syntax */
 }
 
 h1 {
