@@ -16,11 +16,11 @@ header {
     padding: 20px;
     color: white;              /* Text color */
     font-family: Palatino, serif;
-    border: 5px solid white;   /* Correct border syntax */
+    border: 3px solid white;   /* Correct border syntax */
 }
 
 h1 {
-    position: fixed;
+    position: relative;
     bottom: 550px;  /* Fixes the text to the bottom of the viewport */
     margin: 0 0 0 15px;  /* Combine margin reset */
     font-size: 36px;
@@ -30,7 +30,7 @@ h1 {
 }
 
 h2 {
-    position: fixed;
+    position: relative;
     bottom: 500px;
     margin-left: 15px;
     text-align: left;
@@ -38,7 +38,7 @@ h2 {
 }
 
 p {
-    position: fixed;
+    position: relative;
     bottom: 480px;
     margin-left: 15px;
     text-align: left;
