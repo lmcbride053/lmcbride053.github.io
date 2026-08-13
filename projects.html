@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Liam McBride</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="site-header" class="site-header"></header>
+
+<section class="block">
+  <div class="container">
+    <span class="eyebrow">Projects</span>
+    <h1>Work in progress, shown honestly</h1>
+    <p class="lede" style="max-width: 60ch;">
+      Five projects, chosen to cover the gap between analysis and production:
+      cloud infrastructure, distributed processing, deployment, BI tooling, and applied NLP.
+      Status is shown as-is — planned projects are here so you can see the roadmap, not just the finished shelf.
+    </p>
+
+    <div class="filter-bar" id="filter-bar"><!-- populated by main.js --></div>
+
+    <div class="grid" style="margin-top: 2.4em;">
+
+      <div class="card" data-tags="Power BI, BI, DAX">
+        <span class="card-status status-progress">In progress</span>
+        <h3>Job Search Analytics Dashboard</h3>
+        <p class="desc">A Power BI dashboard built on my own job-search tracker — application funnel, interview conversion rate, and time-to-response, modeled across related tables with DAX measures.</p>
+        <div class="tags">
+          <span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">BI</span>
+        </div>
+        <div class="card-links">
+          <a href="https://github.com/yourname/powerbi-job-tracker-dashboard" target="_blank" rel="noopener">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card" data-tags="PySpark, Genomics, Big Data">
+        <span class="card-status status-planned">Planned</span>
+        <h3>Scaling Differential Expression with PySpark</h3>
+        <p class="desc">Reprocessing a public single-cell RNA-seq dataset with PySpark DataFrames, quantifying where a pandas-based version stops scaling and what changes at distributed scale.</p>
+        <div class="tags">
+          <span class="tag">PySpark</span><span class="tag">Genomics</span><span class="tag">Big Data</span>
+        </div>
+        <div class="card-links">
+          <a href="https://github.com/yourname/pyspark-genomics-scale" target="_blank" rel="noopener">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card" data-tags="MLOps, Docker, Deployment">
+        <span class="card-status status-planned">Planned</span>
+        <h3>Model Deployment: From Notebook to API</h3>
+        <p class="desc">Wrapping an existing classification model in a small FastAPI service, containerizing it with Docker, and logging predictions as a first step toward drift monitoring.</p>
+        <div class="tags">
+          <span class="tag">MLOps</span><span class="tag">Docker</span><span class="tag">Deployment</span>
+        </div>
+        <div class="card-links">
+          <a href="https://github.com/yourname/ml-model-deployment" target="_blank" rel="noopener">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card" data-tags="Cloud, ETL, Airflow, SQL">
+        <span class="card-status status-planned">Planned</span>
+        <h3>Cloud-Hosted End-to-End Pipeline</h3>
+        <p class="desc">An ingest → transform → warehouse → orchestrate pipeline on AWS, scheduled with Airflow, ending in a queryable, warehouse-backed dataset.</p>
+        <div class="tags">
+          <span class="tag">Cloud</span><span class="tag">ETL</span><span class="tag">Airflow</span><span class="tag">SQL</span>
+        </div>
+        <div class="card-links">
+          <a href="https://github.com/yourname/cloud-data-pipeline" target="_blank" rel="noopener">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card" data-tags="NLP, LLM, RAG">
+        <span class="card-status status-planned">Planned</span>
+        <h3>Bio-RAG: Ask a Question of a Paper Set</h3>
+        <p class="desc">A small retrieval-augmented generation app over a set of bioinformatics papers — chunking, embedding, vector search, and grounded LLM answers with cited sources.</p>
+        <div class="tags">
+          <span class="tag">NLP</span><span class="tag">LLM</span><span class="tag">RAG</span>
+        </div>
+        <div class="card-links">
+          <a href="https://github.com/yourname/bio-rag-assistant" target="_blank" rel="noopener">GitHub →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="main.js"></script>
+</body>
+</html>

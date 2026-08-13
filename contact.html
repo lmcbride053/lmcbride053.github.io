@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Liam McBride</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="site-header" class="site-header"></header>
+
+<section class="block">
+  <div class="container">
+    <span class="eyebrow">Contact</span>
+    <h1>Get in touch</h1>
+    <p class="lede" style="max-width: 55ch;">
+      Open to data scientist, data engineer, and bioinformatics roles.
+      The fastest way to reach me is email — the form below opens a
+      pre-filled message in your email client.
+    </p>
+
+    <div class="contact-grid">
+      <div>
+        <form id="contact-form" action="#" method="get">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="field">
+            <label for="email">Your email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Send message</button>
+        </form>
+      </div>
+
+      <div>
+        <ul class="contact-list">
+          <li><span class="k">Email</span><a href="mailto:lmcbride053@gmail.com">lmcbride053@gmail.com</a></li>
+          <li><span class="k">LinkedIn</span><a href="https://linkedin.com/in/liam-mcbride-2b413019b" target="_blank" rel="noopener">linkedin.com/in/liam-mcbride</a></li>
+          <li><span class="k">GitHub</span><a href="https://github.com/yourname" target="_blank" rel="noopener">github.com/yourname</a></li>
+          <li><span class="k">Based in</span>Barcelona, Spain</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="main.js"></script>
+<script>
+  // Static-site contact form: builds a mailto: link from the fields
+  // and opens the visitor's email client. No backend required.
+  // To upgrade to a real submitted form later, swap this handler
+  // for a POST to a service like Formspree or Netlify Forms.
+  document.getElementById('contact-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:lmcbride053@gmail.com?subject=${subject}&body=${body}`;
+  });
+</script>
+</body>
+</html>

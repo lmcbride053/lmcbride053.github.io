@@ -1,31 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website Resume</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to external CSS file -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liam McBride — Bioinformatician & Data Scientist</title>
+<meta name="description" content="Portfolio of Liam McBride: bioinformatics, statistical modeling, and machine learning on high-dimensional biological data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header with Navigation Bar -->
-    <header>
-        <!-- Navigation bar with clickable tabs -->
-        <nav>
-            <ul class="navbar">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <!-- Content Section -->
-    <section>
-        <h1>Liam McBride</h1>
-        <h2>Bioinformatician</h2>
-        <p>Welcome to my professional website! Here I include some personal, academic, professional information about me, as well as a few projects I have worked on that demonstrate my bioinformatic abilities.</p>
-    </section>
+<header id="site-header" class="site-header"></header>
 
+<section class="hero">
+  <div id="hero-scatter" class="hero-scatter"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">Barcelona, Spain</span>
+    <h1>Liam McBride</h1>
+    <p class="lede">
+      Bioinformatician and data scientist working on high-dimensional biological data —
+      single-cell genomics, statistical modeling, and the pipelines that turn
+      tens of thousands of features per sample into something a researcher can act on.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="projects.html">View projects</a>
+      <a class="btn" href="resume.pdf">Download résumé</a>
+      <a class="btn" href="contact.html">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="container">
+    <span class="eyebrow">Readout</span>
+    <dl class="readout">
+      <div>
+        <dt>Currently</dt>
+        <dd>Bioinformatics Research Intern, IMIM–Hospital del Mar / UPF</dd>
+      </div>
+      <div>
+        <dt>Education</dt>
+        <dd>M.Sc. Bioinformatics for Health Sciences, UPF</dd>
+      </div>
+      <div>
+        <dt>Focus areas</dt>
+        <dd>Single-cell genomics · Statistical modeling · ML</dd>
+      </div>
+      <div>
+        <dt>Languages</dt>
+        <dd>Python, R, SQL, Bash</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="container">
+    <span class="eyebrow">Selected work</span>
+    <h2>Featured projects</h2>
+    <p>A few of the projects I'm building to show this work end to end — not just the analysis, but the pipeline around it.</p>
+    <div class="grid">
+
+      <div class="card">
+        <span class="card-status status-progress">In progress</span>
+        <h3>Job Search Analytics Dashboard</h3>
+        <p class="desc">A Power BI dashboard modeling my own job search data — application funnel, conversion rates, and time-to-response, built as a real (not tutorial) dataset.</p>
+        <div class="tags">
+          <span class="tag">Power BI</span>
+          <span class="tag">DAX</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-status status-planned">Planned</span>
+        <h3>Scaling Differential Expression with PySpark</h3>
+        <p class="desc">Reprocessing a public single-cell RNA-seq dataset with PySpark to quantify where pandas-based analysis stops scaling.</p>
+        <div class="tags">
+          <span class="tag">PySpark</span>
+          <span class="tag">Genomics</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-status status-planned">Planned</span>
+        <h3>Model Deployment: From Notebook to API</h3>
+        <p class="desc">Taking an existing classification model and shipping it as a small containerized API with basic prediction logging.</p>
+        <div class="tags">
+          <span class="tag">MLOps</span>
+          <span class="tag">Docker</span>
+        </div>
+      </div>
+
+    </div>
+    <p style="margin-top: 2em;"><a href="projects.html">See all projects →</a></p>
+  </div>
+</section>
+
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="main.js"></script>
 </body>
 </html>
