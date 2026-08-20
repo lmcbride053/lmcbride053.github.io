@@ -10,7 +10,7 @@ can serve it directly with zero configuration.
 portfolio-site/
 ├── index.html      Home — hero + featured projects
 ├── about.html       Bio, education timeline, skills, publications
-├── projects.html    All 5 planned projects, filterable by tag
+├── projects.html    3 completed projects, filterable by tag
 ├── contact.html      Contact form (mailto-based) + direct links
 ├── style.css         Shared design tokens + all styling
 ├── main.js           Shared nav/footer injection, hero animation, filtering
@@ -26,12 +26,14 @@ the nav links or footer content once, in `main.js`, and every page updates.
 
 1. **Add `resume.pdf`** to the project root (or update the link in
    `index.html` if you'd rather host it elsewhere).
-2. **Replace `yourname`** — search all files for `github.com/yourname` and
-   swap in your real GitHub username (used in the footer and every project
-   card's "GitHub →" link).
-3. **Fill in real project links** as you finish each of the 5 projects in
-   `projects.html` — update the status badge (`status-planned` →
-   `status-progress` → `status-live`) and the `href` once a repo exists.
+2. **Two GitHub links are still placeholders (`href="#"`)** — the PySpark
+   and Telco churn repos, each appearing in both `index.html` and
+   `projects.html` (4 places total). `github.com/lmcbride053` itself is
+   already correct everywhere else (footer, header, contact page, the
+   Clinical Trials project card).
+3. **If a project's status changes**, update its badge class in the HTML
+   (`status-planned` → `status-progress` → `status-complete`) — all three
+   are defined in `style.css`.
 
 ## Deploy with GitHub Pages (free, ~5 minutes)
 

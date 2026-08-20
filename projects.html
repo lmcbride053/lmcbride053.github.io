@@ -15,74 +15,96 @@
 <section class="block">
   <div class="container">
     <span class="eyebrow">Projects</span>
-    <h1>Work in progress, shown honestly</h1>
+    <h1>Three projects, built end to end</h1>
     <p class="lede" style="max-width: 60ch;">
-      Five projects, chosen to cover the gap between analysis and production:
-      cloud infrastructure, distributed processing, deployment, BI tooling, and applied NLP.
-      Status is shown as-is — planned projects are here so you can see the roadmap, not just the finished shelf.
+      Chosen to cover distinct ground: computational biology, data engineering,
+      and applied data science — each with the full pipeline behind it, not
+      just a model in a notebook. Every finding below comes from real output,
+      not a planned feature.
     </p>
 
     <div class="filter-bar" id="filter-bar"><!-- populated by main.js --></div>
 
     <div class="grid" style="margin-top: 2.4em;">
 
-      <div class="card" data-tags="Power BI, BI, DAX">
-        <span class="card-status status-progress">In progress</span>
-        <h3>Job Search Analytics Dashboard</h3>
-        <p class="desc">A Power BI dashboard built on my own job-search tracker — application funnel, interview conversion rate, and time-to-response, modeled across related tables with DAX measures.</p>
+      <div class="card" data-tags="BigQuery, dbt, SQL, Python, Data Engineering">
+        <span class="card-status status-complete">Complete</span>
+        <h3>Alzheimer's Clinical Trials Data Pipeline</h3>
+        <p class="desc">
+          A full ETL/ELT pipeline over ~4,200 Alzheimer's disease trials from
+          ClinicalTrials.gov: Python extraction → BigQuery → a tested,
+          documented dbt model (staging → intermediate → marts) → an
+          analytical SQL layer built on window functions and multi-step CTEs.
+        </p>
+        <p class="desc">
+          <strong>Key finding:</strong> industry-sponsored trials show a clear
+          "Phase 3 valley of death" — termination risk climbs from 11.5% at
+          Phase 1 to 35.3% at Phase 3, the field's most expensive and
+          definitive stage. Over the same period, the share of trials that
+          are classic phase-classified drug trials (rather than
+          observational studies) has fallen from ~65% to ~30%, a plausible
+          structural response to that failure pattern.
+        </p>
         <div class="tags">
-          <span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">BI</span>
+          <span class="tag">BigQuery</span><span class="tag">dbt</span><span class="tag">SQL</span>
         </div>
         <div class="card-links">
-          <a href="https://github.com/yourname/powerbi-job-tracker-dashboard" target="_blank" rel="noopener">GitHub →</a>
+          <a href="https://github.com/lmcbride053/clinical-alzheimers-trials" target="_blank" rel="noopener">GitHub →</a>
         </div>
       </div>
 
-      <div class="card" data-tags="PySpark, Genomics, Big Data">
-        <span class="card-status status-planned">Planned</span>
-        <h3>Scaling Differential Expression with PySpark</h3>
-        <p class="desc">Reprocessing a public single-cell RNA-seq dataset with PySpark DataFrames, quantifying where a pandas-based version stops scaling and what changes at distributed scale.</p>
+      <div class="card" data-tags="PySpark, Genomics, Python, Bioinformatics">
+        <span class="card-status status-complete">Complete</span>
+        <h3>Recovering Rare Cell Populations at Scale</h3>
+        <p class="desc">
+          An independently built PySpark pipeline — QC, normalization, HVG
+          selection, PCA, clustering — tested against a published single-cell
+          RNA-seq dataset (Di Bella et al. 2021, Nature) with real ground
+          truth: does the pipeline correctly recover a known rare population,
+          Cajal-Retzius cells, and how does recovery reliability change with
+          sample size?
+        </p>
+        <p class="desc">
+          <strong>Key finding:</strong> the full ~89,000-cell dataset recovers
+          Cajal-Retzius cells at 93.3% recall and 55.2% precision — but a
+          sampling experiment shows recall alone is a misleading signal at
+          smaller scale: at 2,000–10,000 cells, recall stays deceptively high
+          (65–78%) while precision collapses to ~1.4%, meaning the pipeline
+          looks like it's finding the rare population when it's really
+          just returning broad, heterogeneous clusters.
+        </p>
         <div class="tags">
-          <span class="tag">PySpark</span><span class="tag">Genomics</span><span class="tag">Big Data</span>
+          <span class="tag">PySpark</span><span class="tag">Genomics</span><span class="tag">scikit-learn</span>
         </div>
         <div class="card-links">
-          <a href="https://github.com/yourname/pyspark-genomics-scale" target="_blank" rel="noopener">GitHub →</a>
+          <a href="#" target="_blank" rel="noopener">GitHub →</a>
         </div>
       </div>
 
-      <div class="card" data-tags="MLOps, Docker, Deployment">
-        <span class="card-status status-planned">Planned</span>
-        <h3>Model Deployment: From Notebook to API</h3>
-        <p class="desc">Wrapping an existing classification model in a small FastAPI service, containerizing it with Docker, and logging predictions as a first step toward drift monitoring.</p>
+      <div class="card" data-tags="Python, scikit-learn, XGBoost, Power BI, Data Science">
+        <span class="card-status status-complete">Complete</span>
+        <h3>Predicting Churn, From Signal to Retention Decision</h3>
+        <p class="desc">
+          A churn model built with methodological rigor as the actual point:
+          leakage-safe preprocessing, a decision threshold locked via
+          cross-validation on training data only (never chosen against the
+          test set), a calibration check, and subgroup error analysis —
+          then a retention-targeting simulation with an explicit sensitivity
+          analysis over the business assumptions, visualized in Power BI.
+        </p>
+        <p class="desc">
+          <strong>Key finding:</strong> at base-case assumptions, model-based
+          targeting (the locked threshold) beats contacting every customer —
+          but only above a break-even retention success rate of ~39%. Below
+          that, the naive "contact everyone" strategy actually wins. The
+          honest answer isn't "the model works," it's "the model works
+          under these specific, checkable conditions."
+        </p>
         <div class="tags">
-          <span class="tag">MLOps</span><span class="tag">Docker</span><span class="tag">Deployment</span>
+          <span class="tag">XGBoost</span><span class="tag">Power BI</span>
         </div>
         <div class="card-links">
-          <a href="https://github.com/yourname/ml-model-deployment" target="_blank" rel="noopener">GitHub →</a>
-        </div>
-      </div>
-
-      <div class="card" data-tags="Cloud, ETL, Airflow, SQL">
-        <span class="card-status status-planned">Planned</span>
-        <h3>Cloud-Hosted End-to-End Pipeline</h3>
-        <p class="desc">An ingest → transform → warehouse → orchestrate pipeline on AWS, scheduled with Airflow, ending in a queryable, warehouse-backed dataset.</p>
-        <div class="tags">
-          <span class="tag">Cloud</span><span class="tag">ETL</span><span class="tag">Airflow</span><span class="tag">SQL</span>
-        </div>
-        <div class="card-links">
-          <a href="https://github.com/yourname/cloud-data-pipeline" target="_blank" rel="noopener">GitHub →</a>
-        </div>
-      </div>
-
-      <div class="card" data-tags="NLP, LLM, RAG">
-        <span class="card-status status-planned">Planned</span>
-        <h3>Bio-RAG: Ask a Question of a Paper Set</h3>
-        <p class="desc">A small retrieval-augmented generation app over a set of bioinformatics papers — chunking, embedding, vector search, and grounded LLM answers with cited sources.</p>
-        <div class="tags">
-          <span class="tag">NLP</span><span class="tag">LLM</span><span class="tag">RAG</span>
-        </div>
-        <div class="card-links">
-          <a href="https://github.com/yourname/bio-rag-assistant" target="_blank" rel="noopener">GitHub →</a>
+          <a href="#" target="_blank" rel="noopener">GitHub →</a>
         </div>
       </div>
 

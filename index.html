@@ -19,9 +19,10 @@
     <span class="eyebrow">Barcelona, Spain</span>
     <h1>Liam McBride</h1>
     <p class="lede">
-      Bioinformatician and data scientist working on high-dimensional biological data —
-      single-cell genomics, statistical modeling, and the pipelines that turn
-      tens of thousands of features per sample into something a researcher can act on.
+      Bioinformatician and data scientist working across computational biology,
+      data engineering, and applied data science — single-cell genomics,
+      clinical-trial data pipelines, and the statistical modeling that turns
+      raw data into a decision someone can actually act on.
     </p>
     <div class="hero-actions">
       <a class="btn btn-primary" href="projects.html">View projects</a>
@@ -62,34 +63,38 @@
     <p>A few of the projects I'm building to show this work end to end — not just the analysis, but the pipeline around it.</p>
     <div class="grid">
 
-      <div class="card">
-        <span class="card-status status-progress">In progress</span>
-        <h3>Job Search Analytics Dashboard</h3>
-        <p class="desc">A Power BI dashboard modeling my own job search data — application funnel, conversion rates, and time-to-response, built as a real (not tutorial) dataset.</p>
+      <div class="card" data-tags="BigQuery, dbt, SQL, Python, Data Engineering">
+        <span class="card-status status-complete">Complete</span>
+        <h3>Alzheimer's Clinical Trials Data Pipeline</h3>
+        <p class="desc">Analyzing 4,200+ Alzheimer's trials from ClinicalTrials.gov, industry-sponsored drug trials show a clear "Phase 3 valley of death" — termination risk climbing to 35% before the field's research mix shifted toward observational studies. Built as a full BigQuery/dbt pipeline with tested, documented SQL models.</p>
         <div class="tags">
-          <span class="tag">Power BI</span>
-          <span class="tag">DAX</span>
+          <span class="tag">BigQuery</span>
+          <span class="tag">dbt</span>
+          <span class="tag">SQL</span>
         </div>
+        <div class="card-links"><a href="https://github.com/lmcbride053/clinical-alzheimers-trials" target="_blank" rel="noopener">View on GitHub →</a></div>
       </div>
 
-      <div class="card">
-        <span class="card-status status-planned">Planned</span>
-        <h3>Scaling Differential Expression with PySpark</h3>
-        <p class="desc">Reprocessing a public single-cell RNA-seq dataset with PySpark to quantify where pandas-based analysis stops scaling.</p>
+      <div class="card" data-tags="PySpark, Genomics, Python, Bioinformatics">
+        <span class="card-status status-complete">Complete</span>
+        <h3>Recovering Rare Cell Populations at Scale</h3>
+        <p class="desc">An independently built PySpark pipeline recovers Cajal-Retzius cells from a ~90,000-cell cortical dataset at 93% recall against published ground truth — but a sampling experiment shows why recall alone is deceptive: precision collapses to under 5% at small sample sizes even while recall stays deceptively high.</p>
         <div class="tags">
           <span class="tag">PySpark</span>
           <span class="tag">Genomics</span>
         </div>
+        <div class="card-links"><a href="#" target="_blank" rel="noopener">View on GitHub →</a></div>
       </div>
 
-      <div class="card">
-        <span class="card-status status-planned">Planned</span>
-        <h3>Model Deployment: From Notebook to API</h3>
-        <p class="desc">Taking an existing classification model and shipping it as a small containerized API with basic prediction logging.</p>
+      <div class="card" data-tags="Python, scikit-learn, XGBoost, Power BI, Data Science">
+        <span class="card-status status-complete">Complete</span>
+        <h3>Predicting Churn, From Signal to Retention Decision</h3>
+        <p class="desc">A calibrated model with a cross-validation-locked decision threshold, stress-tested against real assumption uncertainty: model-based retention targeting beats contacting every customer at base-case assumptions, but only above a ~39% retention success rate — the finding a naive "best model wins" framing would miss.</p>
         <div class="tags">
-          <span class="tag">MLOps</span>
-          <span class="tag">Docker</span>
+          <span class="tag">XGBoost</span>
+          <span class="tag">Power BI</span>
         </div>
+        <div class="card-links"><a href="#" target="_blank" rel="noopener">View on GitHub →</a></div>
       </div>
 
     </div>

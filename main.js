@@ -50,7 +50,7 @@ function renderFooter() {
     <div class="footer-row">
       <span>© ${year} Liam McBride</span>
       <span>
-        <a href="https://github.com/yourname" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://github.com/lmcbride053" target="_blank" rel="noopener">GitHub</a> ·
         <a href="https://linkedin.com/in/liam-mcbride-2b413019b" target="_blank" rel="noopener">LinkedIn</a> ·
         <a href="mailto:lmcbride053@gmail.com">Email</a>
       </span>

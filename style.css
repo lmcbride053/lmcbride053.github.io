@@ -264,6 +264,7 @@ section.block + section.block { border-top: 1px solid var(--border); }
   width: fit-content;
 }
 .status-live { background: #E4F0E8; color: var(--pine-dark); }
+.status-complete { background: #E4F0E8; color: var(--pine-dark); }
 .status-progress { background: #F3E7DC; color: var(--clay); }
 .status-planned { background: var(--paper-alt); color: var(--slate); border: 1px solid var(--border); }
 
