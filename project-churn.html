@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting Churn: From Signal to Retention Decision — Liam McBride</title>
+<meta name="description" content="A leakage-safe churn model with a cross-validation-locked threshold, calibration check, and a retention-targeting strategy stress-tested against real assumption uncertainty.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="site-header" class="site-header"></header>
+
+<section class="project-hero">
+  <div class="container">
+    <div class="meta-row">
+      <span class="card-status status-complete">Complete</span>
+      <span class="eyebrow" style="margin-bottom:0;">Data Science · Retention Strategy</span>
+    </div>
+    <h1>Predicting Churn, From Signal to Retention Decision</h1>
+    <p class="lede" style="max-width: 62ch;">
+      Can churn be predicted accurately enough to support targeted retention —
+      and under what economic conditions does acting on those predictions
+      actually beat simpler alternatives? A model is only half the answer;
+      this project treats the decision built on top of it as the real point.
+    </p>
+
+    <dl class="readout">
+      <div><dt>Customers analyzed</dt><dd>7,032</dd></div>
+      <div><dt>Churn rate</dt><dd>26.6%</dd></div>
+      <div><dt>Best model (CV AUC-ROC)</dt><dd>0.848 (Logistic Regression)</dd></div>
+      <div><dt>Net value at base case</dt><dd>$74,270 (locked threshold)</dd></div>
+    </dl>
+
+    <div class="project-links">
+      <a class="btn btn-primary" href="#" target="_blank" rel="noopener">View on GitHub</a>
+      <a class="btn" href="#" target="_blank" rel="noopener">Power BI dashboard</a>
+    </div>
+
+    <nav class="section-nav" aria-label="Page sections">
+      <a href="#question">The question</a>
+      <a href="#eda">Exploratory analysis</a>
+      <a href="#features">Feature engineering</a>
+      <a href="#modeling">Modeling</a>
+      <a href="#interpretation">Interpretation</a>
+      <a href="#retention">Retention strategy</a>
+      <a href="#findings">Key findings</a>
+    </nav>
+  </div>
+</section>
+
+<section class="block" id="question">
+  <div class="container">
+    <span class="eyebrow">The question</span>
+    <h2>Two questions, not one</h2>
+    <p style="max-width: 68ch;">
+      <strong>Data science question:</strong> can customers at elevated churn
+      risk be identified reliably? <strong>Decision-science question:</strong>
+      can those predictions actually improve a retention strategy — and does
+      that hold up once you're honest about the assumptions it depends on?
+      Most churn projects stop at the first question. The second one is
+      where this project spends most of its effort.
+    </p>
+  </div>
+</section>
+
+<section class="block alt" id="eda">
+  <div class="container">
+    <span class="eyebrow">Exploratory Analysis</span>
+    <h2>Where the signal actually is</h2>
+    <p style="max-width: 68ch;">
+      7,043 Telco customers, 11 dropped for missing billing data (customers
+      with zero tenure who'd never been billed), leaving 7,032. Every
+      relationship below was tested statistically, not eyeballed —
+      Mann-Whitney U for the continuous variables (churned vs. stayed
+      distributions aren't normal, so a t-test would be the wrong tool),
+      chi-square for categorical associations, and Cramér's V to rank those
+      associations on a common 0–1 scale.
+    </p>
+
+    <div class="callout">
+      <p><strong>Tenure and price are the strongest individual predictors.</strong>
+      Median tenure among churned customers is 10 months vs. 38 months among
+      those who stayed (p = 6.0×10⁻²¹¹). Median monthly charges: $79.65 vs.
+      $64.45 (p = 8.5×10⁻⁵⁴). Both differences are enormous by any practical
+      standard, not just statistically significant on a large sample.</p>
+    </div>
+
+    <div class="figure-grid">
+      <figure class="figure">
+        <img src="assets/img/churn/class_balance.png" alt="Class balance bar chart showing churn vs no churn counts">
+        <figcaption>Class balance — 26.6% churn overall. Imbalanced enough that accuracy alone is a misleading metric throughout this project.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/contract_churn.png" alt="Churn rate by contract type bar chart">
+        <figcaption>Churn by contract type — month-to-month customers churn at a dramatically higher rate than 1- or 2-year contract holders.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/payment_churn.png" alt="Churn rate by payment method bar chart">
+        <figcaption>Churn by payment method — electronic check stands out sharply from every other payment type.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/charges_boxplot.png" alt="Box plot of monthly charges split by churn status">
+        <figcaption>Monthly charges by churn status — churned customers skew toward higher bills.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/cramers_v.png" alt="Cramér's V bar chart ranking categorical features by association with churn">
+        <figcaption>Cramér's V ranking — Contract, OnlineSecurity, and TechSupport carry the strongest categorical association with churn; gender and PhoneService are essentially noise.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/top_risk_segments.png" alt="Bar chart of the top 15 highest-risk customer segments">
+        <figcaption>Highest-risk segments (n ≥ 30) — where risk factors compound, not just where any single one applies.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="features">
+  <div class="container">
+    <span class="eyebrow">Feature Engineering</span>
+    <h2>Built to survive contact with a train/test split</h2>
+    <p style="max-width: 68ch;">
+      Every engineered feature here uses fixed rules or per-row arithmetic —
+      tenure buckets, spend-per-tenure ratio, a corrected service count, a
+      security/support flag, an electronic-check flag — none of it depends
+      on a dataset-level statistic, so it's safe to compute before any split.
+      Two things that <em>do</em> need a statistic — a spend-median threshold
+      and one-hot encoding — are fit on training data only and applied
+      unchanged to test.
+    </p>
+
+    <div class="callout warn">
+      <p><strong>A real bug worth documenting, not hiding:</strong> the first
+      version of a "number of services" feature counted across all 8 service
+      columns, including phone service — which conflated "has internet,
+      declined every add-on" with "has no internet at all." That broke
+      monotonicity: churn rate went 0.44 → 0.21 → 0.33 → 0.36 as the count
+      increased. Restricting the count to genuinely internet-dependent
+      add-ons, computed only for customers who have internet, fixed it —
+      churn rate now drops cleanly and monotonically from 52% at 0 services
+      to 5% at 6.</p>
+    </div>
+
+    <p style="max-width: 68ch;">
+      <code>gender</code> and <code>PhoneService</code> were dropped entirely
+      rather than encoded — the EDA's own Cramér's V ranking found both at
+      essentially zero (0.008 and 0.011), so keeping them would have added
+      noise features the model would need to learn to ignore.
+    </p>
+
+    <div class="figure-grid single">
+      <figure class="figure">
+        <img src="assets/img/churn/feature_correlation.png" alt="Bar chart of feature correlation with churn, computed on the training set only">
+        <figcaption>Feature correlation with churn — computed on the training set only, so nothing about the held-out test set leaks into feature interpretation.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="block alt" id="modeling">
+  <div class="container">
+    <span class="eyebrow">Modeling</span>
+    <h2>Three models, a real baseline, and a threshold locked the right way</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th class="num">AUC-ROC</th><th class="num">PR-AUC</th><th class="num">F1 (churn)</th><th class="num">Recall</th><th class="num">Precision</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Majority-class baseline</td><td class="num">—</td><td class="num">—</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">0.000</td></tr>
+        <tr class="highlight"><td>Logistic Regression</td><td class="num">0.837</td><td class="num">0.654</td><td class="num">0.611</td><td class="num">0.791</td><td class="num">0.498</td></tr>
+        <tr><td>Random Forest</td><td class="num">0.834</td><td class="num">0.636</td><td class="num">0.620</td><td class="num">0.727</td><td class="num">0.541</td></tr>
+        <tr><td>XGBoost</td><td class="num">0.828</td><td class="num">0.628</td><td class="num">0.614</td><td class="num">0.754</td><td class="num">0.517</td></tr>
+      </tbody>
+    </table>
+    <p style="max-width: 68ch;">
+      All three models clear the baseline by a wide margin, and cluster
+      tightly together — Logistic Regression actually edges out XGBoost on
+      AUC-ROC here (0.837 vs. 0.828), which matters: the simplest,
+      fully-interpretable model isn't meaningfully worse than the
+      more complex ones on this dataset. XGBoost was carried forward for
+      the threshold-locking and SHAP interpretation below, mainly to
+      demonstrate that tooling — but the honest conclusion is that model
+      complexity bought very little here.
+    </p>
+
+    <div class="figure-grid">
+      <figure class="figure">
+        <img src="assets/img/churn/roc_curves.png" alt="ROC curves comparing the three models">
+        <figcaption>ROC curves — all three models comfortably separate from the random baseline.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/pr_curves.png" alt="Precision-recall curves comparing the three models">
+        <figcaption>Precision-recall curves — the more informative comparison given the 26.6% base rate.</figcaption>
+      </figure>
+    </div>
+
+    <div class="callout">
+      <p><strong>The threshold was locked without ever touching the test set.</strong>
+      5-fold cross-validated out-of-fold predictions on training data only,
+      swept across thresholds, picked the one maximizing F1 (0.50, OOF F1 =
+      0.631) — then the test set was used exactly once, for a single final
+      evaluation. This directly fixes a real leakage bug from an earlier
+      draft, which chose the threshold by maximizing F1 <em>on the test
+      set itself</em>, then reported results on that same test set.</p>
+    </div>
+
+    <div class="figure-grid">
+      <figure class="figure">
+        <img src="assets/img/churn/threshold_analysis.png" alt="Precision, recall, and F1 plotted against decision threshold from cross-validated predictions">
+        <figcaption>Threshold sweep on cross-validated out-of-fold predictions — training data only.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/confusion_matrix.png" alt="Confusion matrix at the locked threshold on the test set">
+        <figcaption>Final test-set confusion matrix at the locked threshold: 75% overall accuracy, 52% precision / 75% recall on churners.</figcaption>
+      </figure>
+    </div>
+
+    <p style="max-width: 68ch;">
+      Calibration matters because these probabilities go on to drive real
+      targeting decisions below — a predicted 70% churn risk should mean
+      roughly 70% of similarly-scored customers actually churn.
+    </p>
+    <div class="figure-grid single">
+      <figure class="figure">
+        <img src="assets/img/churn/calibration_curve.png" alt="Calibration curve comparing predicted probability to observed churn rate">
+        <figcaption>Calibration curve — Brier score 0.168, reasonably close to the diagonal.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="interpretation">
+  <div class="container">
+    <span class="eyebrow">Interpretation</span>
+    <h2>What the model is actually using — and where it's blind</h2>
+
+    <div class="figure-grid">
+      <figure class="figure">
+        <img src="assets/img/churn/xgb_feature_importance.png" alt="XGBoost top 20 feature importances bar chart">
+        <figcaption>XGBoost feature importances.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/lr_coefficients.png" alt="Logistic Regression coefficients bar chart">
+        <figcaption>Logistic Regression coefficients — directly interpretable on a log-odds scale.</figcaption>
+      </figure>
+    </div>
+
+    <div class="figure-grid">
+      <figure class="figure">
+        <img src="assets/img/churn/shap_summary.png" alt="SHAP summary plot across all test customers">
+        <figcaption>SHAP summary — global feature impact across all 1,407 test customers.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/shap_waterfall_high_risk.png" alt="SHAP waterfall plot for the single highest-risk test customer">
+        <figcaption>SHAP waterfall for the single highest-risk customer — 98.1% predicted probability, and they did churn.</figcaption>
+      </figure>
+    </div>
+
+    <div class="figure-grid single">
+      <figure class="figure">
+        <img src="assets/img/churn/shap_dependence_tenure.png" alt="SHAP dependence plot for tenure">
+        <figcaption>SHAP dependence — tenure's effect on the model's output isn't linear; the steepest drop in risk happens early.</figcaption>
+      </figure>
+    </div>
+
+    <div class="callout warn">
+      <p><strong>The model's blind spot is exactly where its strongest signal lives.</strong>
+      Subgroup error analysis on the locked-threshold predictions: false-negative
+      rate (missed churners) climbs from 10.7% for 0–6 month customers to
+      58.3% for 4+ year customers. Two-year contract holders have a 100%
+      false-negative rate — the model almost never flags anyone in that
+      group as high-risk, because long tenure and long contracts are such
+      strong loyalty signals that it misses the rare customer in that
+      segment who does leave. Not a bug — a real, defensible limitation
+      worth stating plainly rather than papering over.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block alt" id="retention">
+  <div class="container">
+    <span class="eyebrow">Retention Strategy</span>
+    <h2>From a probability to a targeting decision</h2>
+    <p style="max-width: 68ch;">
+      Six strategies compared: contact nobody, contact everyone, the model's
+      locked threshold, and three fixed-capacity strategies (top 5% / 10% /
+      20% by predicted risk) — the realistic shape of an actual retention
+      campaign, where a team usually has budget for <em>N</em> outreach
+      calls, not "however many the threshold happens to flag."
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Strategy</th><th class="num">Contacted</th><th class="num">Churners captured</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">Lift</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Contact nobody</td><td class="num">0</td><td class="num">0</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr><td>Contact everyone</td><td class="num">1,407</td><td class="num">374</td><td class="num">0.266</td><td class="num">1.000</td><td class="num">1.00</td></tr>
+        <tr class="highlight"><td>Locked threshold</td><td class="num">545</td><td class="num">282</td><td class="num">0.517</td><td class="num">0.754</td><td class="num">1.95</td></tr>
+        <tr><td>Top 5%</td><td class="num">71</td><td class="num">58</td><td class="num">0.817</td><td class="num">0.155</td><td class="num">3.07</td></tr>
+        <tr><td>Top 10%</td><td class="num">141</td><td class="num">102</td><td class="num">0.723</td><td class="num">0.273</td><td class="num">2.72</td></tr>
+        <tr><td>Top 20%</td><td class="num">282</td><td class="num">181</td><td class="num">0.642</td><td class="num">0.484</td><td class="num">2.41</td></tr>
+      </tbody>
+    </table>
+
+    <div class="figure-grid single">
+      <figure class="figure">
+        <img src="assets/img/churn/targeting_lift.png" alt="Bar chart of targeting lift over random by strategy">
+        <figcaption>Targeting lift over random — the top 5% strategy has the highest precision-driven lift, at the cost of catching very few total churners.</figcaption>
+      </figure>
+    </div>
+
+    <p style="max-width: 68ch;">
+      Business assumptions are stated explicitly, not hidden inside the
+      numbers: <strong>CLV = $1,200</strong>, <strong>offer cost = $50</strong>,
+      <strong>retention success rate = 30%</strong> — illustrative figures,
+      not real company data.
+    </p>
+
+    <div class="figure-grid single">
+      <figure class="figure">
+        <img src="assets/img/churn/net_value_by_strategy.png" alt="Bar chart of net value by strategy at base-case assumptions">
+        <figcaption>Net value by strategy at base-case assumptions — the locked threshold wins ($74,270), beating contact-everyone ($64,290) despite reaching far fewer people.</figcaption>
+      </figure>
+    </div>
+
+    <div class="callout">
+      <p><strong>The conclusion is not robust to every assumption — and that's the actual finding.</strong>
+      The sensitivity analysis shows "contact everyone" wins instead when
+      CLV rises to $1,600, when offer cost drops to $30, or when the
+      retention success rate reaches 40%. The break-even retention rate,
+      holding CLV and cost at base case, is <strong>~39%</strong> — below
+      it, blanket contact wins; above it, targeted contact wins.</p>
+    </div>
+
+    <div class="figure-grid">
+      <figure class="figure">
+        <img src="assets/img/churn/sensitivity_heatmap.png" alt="Heatmap showing where the locked threshold strategy beats contact everyone across CLV and retention rate">
+        <figcaption>Where the locked threshold beats contact-everyone, across CLV and retention success rate (offer cost fixed at $50).</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="assets/img/churn/breakeven_analysis.png" alt="Break-even chart solving for the retention rate where strategies tie">
+        <figcaption>Break-even solved directly: ~39% retention success rate at base-case CLV and offer cost.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="findings">
+  <div class="container">
+    <span class="eyebrow">Key Findings</span>
+    <h2>What this project actually shows</h2>
+    <ul style="max-width: 68ch; color: var(--ink-soft);">
+      <li>Tenure and monthly charges are the two strongest individual predictors of churn, both by a wide statistical margin.</li>
+      <li>Three well-tuned models land within 1 point of each other on AUC-ROC — the simplest one (Logistic Regression) is competitive with XGBoost here, not clearly worse.</li>
+      <li>A cross-validation-locked threshold, chosen without touching test data, is the methodological difference between a defensible result and an optimistically biased one.</li>
+      <li>The model's biggest blind spot (long-tenure, long-contract churners) is exactly where its strongest predictive signal also lives — a real, stated limitation rather than a hidden one.</li>
+      <li>Model-based retention targeting beats contacting every customer — but only above a ~39% retention success rate. Below that, simpler blanket outreach wins. The honest claim is conditional, not absolute.</li>
+    </ul>
+  </div>
+</section>
+
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="main.js"></script>
+</body>
+</html>

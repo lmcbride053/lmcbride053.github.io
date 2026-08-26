@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alzheimer's Clinical Trials Data Pipeline — Liam McBride</title>
+<meta name="description" content="A full BigQuery/dbt data pipeline over 4,214 Alzheimer's clinical trials, with an analytical SQL layer uncovering why drug development struggles hardest at Phase 3 and how the field has shifted in response.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="site-header" class="site-header"></header>
+
+<section class="project-hero">
+  <div class="container">
+    <div class="meta-row">
+      <span class="card-status status-complete">Complete</span>
+      <span class="eyebrow" style="margin-bottom:0;">Data Engineering · Cloud &amp; SQL</span>
+    </div>
+    <h1>Alzheimer's Clinical Trials Data Pipeline</h1>
+    <p class="lede" style="max-width: 62ch;">
+      A full ETL pipeline over real clinical trial data — not a toy dataset —
+      built to answer a genuine research question: where does Alzheimer's
+      drug development actually fail, and how has the field responded?
+      The SQL analytics layer is the showcase; the pipeline underneath it
+      is what makes the numbers trustworthy.
+    </p>
+
+    <dl class="readout">
+      <div><dt>Trials analyzed</dt><dd>4,214 (Alzheimer's disease)</dd></div>
+      <div><dt>Source</dt><dd>ClinicalTrials.gov API v2</dd></div>
+      <div><dt>Peak termination rate</dt><dd>35.3% (Industry, Phase 3)</dd></div>
+      <div><dt>Duration trend</dt><dd>~2,000 → ~650 days since 2010</dd></div>
+    </dl>
+
+    <div class="project-links">
+      <a class="btn btn-primary" href="https://github.com/lmcbride053/clinical-alzheimers-trials" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+
+    <nav class="section-nav" aria-label="Page sections">
+      <a href="#question">The question</a>
+      <a href="#pipeline">Pipeline &amp; data model</a>
+      <a href="#q1">Termination &amp; failure</a>
+      <a href="#q2">The field's shift</a>
+      <a href="#q3">Trial duration</a>
+      <a href="#findings">Key findings</a>
+    </nav>
+  </div>
+</section>
+
+<section class="block" id="question">
+  <div class="container">
+    <span class="eyebrow">The Question</span>
+    <h2>Three questions, one narrative</h2>
+    <p style="max-width: 68ch;">
+      Where does Alzheimer's drug development actually fail? Has the field's
+      research mix shifted in response? And are the trials that do run
+      getting faster or slower over time? Framed and answered directly
+      against a real, cloud-hosted pipeline — not assumed in advance, but
+      drafted only after seeing what the actual data supported.
+    </p>
+  </div>
+</section>
+
+<section class="block alt" id="pipeline">
+  <div class="container">
+    <span class="eyebrow">Pipeline &amp; Data Model</span>
+    <h2>API → BigQuery → dbt → analytical SQL</h2>
+    <p style="max-width: 68ch;">
+      A Python extraction script pulls the full Alzheimer's-scoped dataset
+      from ClinicalTrials.gov's public API — deliberately requesting
+      <strong>full study records</strong> rather than a field-filtered
+      subset, so the nested JSON stays genuinely messy and the dbt
+      staging layer's flattening work is a real exercise, not something
+      the extraction script already did. Landed in BigQuery as raw JSON,
+      then modeled through three dbt layers:
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Layer</th><th>Model</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Staging</td><td><code>stg_studies</code></td><td>Flattens nested JSON into one clean row per study</td></tr>
+        <tr><td>Intermediate</td><td><code>int_studies_categorized</code></td><td>Business-logic categorization: outcome status, phase grouping, duration fields</td></tr>
+        <tr><td>Marts</td><td><code>fct_studies</code></td><td>The stable, query-ready fact table — analysis and BI tools query only this</td></tr>
+      </tbody>
+    </table>
+
+    <p style="max-width: 68ch;">
+      dbt tests enforce <code>not_null</code> and <code>unique</code> on
+      <code>nct_id</code> and category validity across all three layers.
+      A genuinely empty phases array (typically an observational study) is
+      kept distinct from an array containing the literal string
+      <code>"NA"</code> (an interventional study with no applicable phase)
+      — different things, not collapsed into one "unknown" bucket.
+    </p>
+  </div>
+</section>
+
+<section class="block" id="q1">
+  <div class="container">
+    <span class="eyebrow">Question 1</span>
+    <h2>Where do Alzheimer's trials actually fail?</h2>
+    <p style="max-width: 68ch;">
+      A window-function ranking of termination rate by sponsor class and
+      phase, restricted to trials with a known outcome (excluding still-active
+      trials, since their outcome isn't known yet).
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Sponsor class</th><th>Phase</th><th class="num">n</th><th class="num">Termination rate</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Industry</td><td>Phase 1</td><td class="num">357</td><td class="num">11.5%</td></tr>
+        <tr><td>Industry</td><td>Phase 2</td><td class="num">316</td><td class="num">24.4%</td></tr>
+        <tr class="highlight"><td>Industry</td><td>Phase 3</td><td class="num">190</td><td class="num">35.3%</td></tr>
+        <tr><td>Industry</td><td>Phase 4</td><td class="num">43</td><td class="num">14.0%</td></tr>
+        <tr class="highlight"><td>Academic (Other)</td><td>Phase 1</td><td class="num">156</td><td class="num">18.6%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="figure-grid single">
+      <!-- IMAGE PLACEHOLDER: grouped bar chart, termination rate by phase, industry vs academic -->
+    </div>
+
+    <div class="callout">
+      <p><strong>A "Phase 3 valley of death," specifically for industry.</strong>
+      Industry-sponsored termination risk climbs steadily from 11.5% at
+      Phase 1 to 35.3% at Phase 3 — the field's most expensive, most
+      statistically rigorous stage — before dropping at Phase 4 (explained
+      by survivorship: only already-approved drugs reach post-approval
+      trials). Academic trials show the <em>opposite</em> pattern, peaking
+      at Phase 1 (18.6%) — plausibly a different failure mode entirely:
+      grant funding lapsing rather than a drug failing to show efficacy.</p>
+    </div>
+
+    <p style="max-width: 68ch; font-size: 0.9rem; color: var(--slate);">
+      <strong>Caveat:</strong> federal, NIH, and other-government sponsor
+      classes have small sample sizes in several phase groups (as low as
+      n=5–13) — their rates are noisier and shouldn't be read with the same
+      confidence as the Industry and Academic findings above.
+    </p>
+  </div>
+</section>
+
+<section class="block alt" id="q2">
+  <div class="container">
+    <span class="eyebrow">Question 2</span>
+    <h2>Has the field shifted away from classic drug trials?</h2>
+    <p style="max-width: 68ch;">
+      Comparing phase-classified interventional trials (the "classic" drug
+      trial) against non-phase-classified studies (largely observational
+      or biomarker research) over time, and on other characteristics.
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Era</th><th class="num">Phase-classified share</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2006–2009 (peak)</td><td class="num">60–67%</td></tr>
+        <tr class="highlight"><td>2016–present</td><td class="num">25–36%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="figure-grid single">
+      <!-- IMAGE PLACEHOLDER: line chart, phase-classified share of trials by start year, 2006-present -->
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Sponsor class</th><th class="num">Non-phase avg. enrollment</th><th class="num">Phase-classified avg. enrollment</th><th class="num">Ratio</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Academic (Other)</td><td class="num">4,512</td><td class="num">123</td><td class="num">~37×</td></tr>
+        <tr><td>Industry</td><td class="num">7,053</td><td class="num">401</td><td class="num">~18×</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <p><strong>The field has genuinely shifted toward observational research</strong>
+      — the phase-classified share of AD trials fell from a 60–67% peak
+      (2006–2009) to a sustained 25–36% from 2016 onward, with no real
+      recovery. Non-phase (observational) trials also enroll 15–35× more
+      participants than interventional ones — intuitive once stated:
+      observational studies just track people, while interventional trials
+      require per-participant dosing and safety monitoring, keeping them
+      inherently smaller. NIH- and network-sponsored non-phase trials show
+      extremely long average durations (3,194 and 4,643 days — 8.7 and 12.7
+      years), consistent with the kind of decades-long longitudinal cohort
+      studies NIH is known for funding in this space (ADNI, the Alzheimer's
+      Disease Neuroimaging Initiative, is the well-known real-world example).</p>
+    </div>
+
+    <p style="max-width: 68ch; font-size: 0.9rem; color: var(--slate);">
+      <strong>A plausible connection to Question 1</strong> — worth labeling
+      clearly as interpretation, not something the data proves directly: if
+      industry drug trials keep failing hardest at the expensive, definitive
+      Phase 3 stage, a field-level shift toward foundational
+      biomarker/observational research — rather than repeated costly
+      late-phase drug attempts — is exactly the kind of response you'd
+      expect to see.
+    </p>
+  </div>
+</section>
+
+<section class="block" id="q3">
+  <div class="container">
+    <span class="eyebrow">Question 3</span>
+    <h2>Are the trials that do run getting faster?</h2>
+    <p style="max-width: 68ch;">
+      Median time-to-completion by start-year cohort, among trials with
+      both a start and completion date recorded.
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Era</th><th class="num">Median duration</th><th class="num">~Years</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2010–2014 (peak)</td><td class="num">1,800–2,200 days</td><td class="num">5–6</td></tr>
+        <tr><td>2015</td><td class="num">1,277 days</td><td class="num">~3.5</td></tr>
+        <tr class="highlight"><td>2024–2025</td><td class="num">641–655 days</td><td class="num">&lt;2</td></tr>
+      </tbody>
+    </table>
+
+    <div class="figure-grid single">
+      <!-- IMAGE PLACEHOLDER: line chart, median trial duration by start-year cohort, 2010-2025 -->
+    </div>
+
+    <div class="callout">
+      <p><strong>Trial duration has roughly halved since its 2010–2014 peak</strong>
+      — from 1,800–2,200 days down to 641–655 days by 2024–2025, with solid
+      sample sizes in recent years (n=218–252) giving real confidence in the
+      trend. This isn't just a side effect of the Question 2 mix shift:
+      checked directly, phase-classified and non-phase trials have similar
+      average durations within each sponsor type (877 vs. 857 days for
+      Industry, 1,272 vs. 1,201 for Academic) — the shrinking-duration trend
+      is a separate phenomenon. Plausible explanations worth floating, but
+      not proven here: biomarker-based patient enrichment (confirming
+      amyloid-positive status before enrollment) letting trials reach
+      conclusions faster with better-selected participants, or growing
+      regulatory/field urgency given Alzheimer's unmet need.</p>
+    </div>
+
+    <p style="max-width: 68ch; font-size: 0.9rem; color: var(--slate);">
+      <strong>Caveat:</strong> early years (1981–2005) and the tail year
+      (2027) have tiny sample sizes (n=1–4) and aren't filtered the same
+      way as the rest of this analysis — noisy, not to be read as signal.
+    </p>
+  </div>
+</section>
+
+<section class="block alt" id="findings">
+  <div class="container">
+    <span class="eyebrow">Key Findings</span>
+    <h2>A coherent story, not three disconnected numbers</h2>
+    <p style="max-width: 68ch;">
+      Drug development struggles hardest at the expensive, definitive Phase
+      3 stage <strong>→</strong> the field has shifted toward more
+      observational and biomarker research over the same period
+      <strong>→</strong> and the trials that do run have gotten meaningfully
+      faster over the past decade. Each finding was drafted only after
+      seeing what the data actually supported, not assumed going in.
+    </p>
+    <ul style="max-width: 68ch; color: var(--ink-soft);">
+      <li>Industry-sponsored Alzheimer's trials fail most often at Phase 3 (35.3% termination) — the field's most expensive, most statistically demanding stage — while academic trials fail earliest, at Phase 1 (18.6%), likely a funding rather than efficacy problem.</li>
+      <li>The phase-classified share of AD trials has fallen by roughly half since its 2006–2009 peak, with no recovery since 2016 — a genuine structural shift, not noise.</li>
+      <li>Median trial duration has roughly halved since 2010–2014, and that trend holds even after controlling for the phase-classification mix shift — a separate, real phenomenon.</li>
+      <li>Every finding is explicitly labeled by confidence level — flagged caveats on small-sample sponsor classes and sparse early/tail years, rather than presenting every number with the same certainty.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="block" id="tech">
+  <div class="container">
+    <span class="eyebrow">Tech Stack</span>
+    <p style="max-width: 68ch; font-family: var(--mono); font-size: 0.9rem; color: var(--ink-soft);">
+      Python · BigQuery · dbt Core · SQL (window functions, multi-step CTEs) · ClinicalTrials.gov API v2
+    </p>
+  </div>
+</section>
+
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="main.js"></script>
+</body>
+</html>
