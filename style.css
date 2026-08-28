@@ -356,6 +356,24 @@ section.block + section.block { border-top: 1px solid var(--border); }
   color: var(--slate);
 }
 
+.timeline-more { margin-top: 8px; }
+.timeline-more summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--pine);
+  list-style: none;
+  padding: 8px 0;
+  user-select: none;
+}
+.timeline-more summary::-webkit-details-marker { display: none; }
+.timeline-more summary::marker { content: ""; }
+.timeline-more summary:hover { color: var(--pine-dark); }
+.timeline-more .hide-label { display: none; }
+.timeline-more[open] .show-label { display: none; }
+.timeline-more[open] .hide-label { display: inline; }
+.timeline-more .timeline-item:first-of-type { margin-top: 14px; }
+
 /* ---------- Contact ---------- */
 .contact-grid {
   display: grid;
