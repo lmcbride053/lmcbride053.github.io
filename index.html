@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Liam McBride — Bioinformatician & Data Scientist</title>
-<meta name="description" content="Portfolio of Liam McBride: bioinformatics, statistical modeling, and machine learning on high-dimensional biological data.">
+<meta name="description" content="Portfolio of Liam McBride: bioinformatics, data engineering, and applied data science on high-dimensional biological and real-world data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -13,7 +13,7 @@
 
 <header id="site-header" class="site-header"></header>
 
-<section class="hero">
+<section class="hero" id="home">
   <div id="hero-scatter" class="hero-scatter"></div>
   <div class="hero-inner">
     <div class="about-hero-grid">
@@ -21,15 +21,15 @@
         <span class="eyebrow">Barcelona, Spain</span>
         <h1>Liam McBride</h1>
         <p class="lede">
-          Bioinformatician and data scientist working across computational biology,
-          data engineering, and applied data science — single-cell genomics,
-          clinical-trial data pipelines, and the statistical modeling that turns
-          raw data into a decision someone can actually act on.
+          Bioinformatician and data scientist working across computational
+          biology, data engineering, and applied data science: single-cell
+          genomics, clinical-trial data pipelines, and the statistical
+          modeling that turns raw data into a decision someone can act on.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="projects.html">View projects</a>
+          <a class="btn btn-primary" href="#projects">View projects</a>
           <a class="btn" href="resume.pdf">Download résumé</a>
-          <a class="btn" href="contact.html">Get in touch</a>
+          <a class="btn" href="#contact">Get in touch</a>
         </div>
       </div>
       <img src="assets/img/headshot.jpg" alt="Portrait of Liam McBride" width="960" height="1440">
@@ -61,53 +61,353 @@
   </div>
 </section>
 
-<section class="block alt">
+<!-- ============================== ABOUT ============================== -->
+<section class="block alt" id="about">
   <div class="container">
-    <span class="eyebrow">Selected work</span>
-    <h2>Featured projects</h2>
-    <p>A few of the projects I'm building to show this work end to end — not just the analysis, but the pipeline around it.</p>
-    <div class="grid">
+    <span class="eyebrow">About</span>
+    <div class="about-hero-grid">
+      <div>
+        <h1>Statistical rigor, applied to biology</h1>
+        <p class="lede" style="max-width: 60ch;">
+          I work at the intersection of statistics, machine learning, and
+          real-world data infrastructure, building the pipelines that turn
+          noisy, high-dimensional data into findings a team can actually
+          use. My background is in biology and mathematics, and my current
+          work spans bioinformatics, data engineering, and applied data
+          science. The throughline is the same rigorous statistical
+          thinking, applied to messy data wherever it lives.
+        </p>
+        <p style="max-width: 60ch;">
+          <!-- PLACEHOLDER: add a sentence or two here about what you're
+               into outside of work -- hobbies, interests, whatever feels
+               true. This is the "climbing, tennis, cats" line from
+               Brittany's site -- a real personal detail, not invented. -->
+          In my free time I can be found playing clarinet in a local
+          catalan orchestra, running the Carretera de les Aigües, or
+          swimming on the Panteres Grogues swim team. I have been 
+          slowly setting down roots here in Catalunya, and I'm looking 
+          forward to spending my next several years here. As an Irish
+          citizen I have right to work and travel in the EU and so
+          I do not need sponsorship.
+          
+        </p>
+      </div>
+      <img src="assets/img/graduation.jpg" alt="Liam McBride at UPF graduation, 2026" width="960" height="1280">
+    </div>
+  </div>
+</section>
 
-      <div class="card" data-tags="BigQuery, dbt, SQL, Python, Data Engineering">
+<section class="block">
+  <div class="container">
+    <span class="eyebrow">Education</span>
+    <h2>Timeline</h2>
+
+    <div class="timeline-item">
+      <div class="when">Oct 2024 – June 2026</div>
+      <h3>M.Sc. Bioinformatics for Health Sciences</h3>
+      <p>Universitat Pompeu Fabra (UPF), Barcelona. Coursework in statistical &amp; machine learning methods, databases &amp; web development (SQL), algorithms, and computational genomics.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="when">Aug 2019 – May 2024</div>
+      <h3>B.A. Biology — Mathematical Biology &amp; Statistics/Data Science concentrations</h3>
+      <p>St. Olaf College, Northfield, MN. Presidential Scholarship, Dean's List (2021–2022).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== EXPERIENCE ============================== -->
+<section class="block alt" id="experience">
+  <div class="container">
+    <span class="eyebrow">Experience</span>
+    <h2>Where I've worked</h2>
+
+    <!-- PLACEHOLDER: only "Bioinformatics Research Intern, IMIM" is
+         confirmed (from the old hero readout). Dates, responsibilities,
+         and tech stack below are not invented -- fill in the real ones. -->
+    <div class="timeline-item">
+      <div class="when">[Add start date] – Present</div>
+      <h3>Bioinformatics Research Intern · IMIM (Hospital del Mar Research Institute)</h3>
+      <p>[Add 1–2 sentences on what this role actually involves. It likely overlaps with the thesis work in the Busquets-Garcia Lab below — worth confirming whether this is a continuation of the same position.]</p>
+      <div class="tags">
+        <span class="tag">[Add relevant tools]</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== THESIS ============================== -->
+<section class="block" id="thesis">
+  <div class="container">
+    <span class="eyebrow">M.Sc. Thesis</span>
+    <h2>Linking cannabinoids to Alzheimer's disease, at single-cell resolution</h2>
+
+    <dl class="readout" style="margin-bottom: 2em;">
+      <div><dt>Grade</dt><dd>9.1 / 9.2 out of 10</dd></div>
+      <div><dt>Status</dt><dd>Successfully defended</dd></div>
+      <div><dt>Lab</dt><dd>Busquets-Garcia Lab, Hospital del Mar Research Institute (IMIM)</dd></div>
+    </dl>
+
+    <p style="max-width: 68ch;">
+      My thesis, conducted in Dr. Arnau Busquets Garcia's lab at IMIM
+      (Cell-Type Mechanisms in Normal and Pathological Behavior Research
+      Group), asked whether a cannabinoid compound could reverse molecular
+      and behavioral signs of Alzheimer's disease in a mouse model, and if
+      so, through which cell types and regulatory mechanisms.
+    </p>
+    <p style="max-width: 68ch;">
+      The study combined behavioral testing with single-cell RNA
+      sequencing across the major cell populations of the hippocampus,
+      comparing a well-established transgenic Alzheimer's mouse model
+      against wild-type controls, treated and untreated. I built the
+      computational analysis end to end: quality control and cell-type
+      annotation across roughly 190,000 cells, differential expression and
+      pathway-activity scoring across cell types, and gene regulatory
+      network reconstruction to identify which transcriptional programs
+      were disrupted by disease and responsive to treatment.
+    </p>
+    <p style="max-width: 68ch;">
+      The analysis pointed to a specific vascular cell population as an
+      unexpectedly central site of the disease's molecular impact. That's
+      not a cell type traditionally considered a primary driver in
+      Alzheimer's research. It also identified a small set of candidate
+      transcriptional regulators that may explain how the treatment
+      partially reverses that impact.
+    </p>
+
+    <div class="callout">
+      <p>This is unpublished, ongoing research. The more specific
+      findings, exact recovery figures and the individual transcription
+      factors and genes identified, are kept general here rather than
+      published ahead of the work itself. Happy to discuss the details
+      directly in conversation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SKILLS ============================== -->
+<section class="block alt" id="skills">
+  <div class="container">
+    <span class="eyebrow">Skills</span>
+    <h2>Working toolkit</h2>
+
+    <div class="skill-group">
+      <h3>Languages</h3>
+      <div class="skill-tags">
+        <span class="tag">Python</span><span class="tag">R</span><span class="tag">SQL</span><span class="tag">Bash</span><span class="tag">Git</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Data Science &amp; ML</h3>
+      <div class="skill-tags">
+        <span class="tag">scikit-learn</span><span class="tag">XGBoost</span><span class="tag">PyTorch</span><span class="tag">pandas</span><span class="tag">NumPy</span><span class="tag">SciPy</span><span class="tag">statsmodels</span><span class="tag">tidyverse</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Visualization &amp; Reporting</h3>
+      <div class="skill-tags">
+        <span class="tag">ggplot2</span><span class="tag">matplotlib</span><span class="tag">Seaborn</span><span class="tag">Power BI</span><span class="tag">Shiny</span><span class="tag">RMarkdown</span><span class="tag">Jupyter</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Data Engineering</h3>
+      <div class="skill-tags">
+        <span class="tag">PySpark</span><span class="tag">BigQuery</span><span class="tag">dbt</span><span class="tag">Docker</span><span class="tag">Nextflow</span><span class="tag">HPC / cluster computing</span><span class="tag">BioPython</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Domain</h3>
+      <div class="skill-tags">
+        <span class="tag">High-dimensional genomics data</span><span class="tag">Hypothesis testing</span><span class="tag">Pipeline development</span><span class="tag">Reproducible research</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== PROJECTS ============================== -->
+<section class="block" id="projects">
+  <div class="container">
+    <span class="eyebrow">Selected Work</span>
+    <h2>Three projects, built end to end</h2>
+    <p style="max-width: 60ch;">
+      Chosen to cover distinct ground: computational biology, data
+      engineering, and applied data science, each with the full pipeline
+      behind it rather than just a model in a notebook. Every finding
+      below comes from real output, not a planned feature.
+    </p>
+
+    <div class="grid" style="margin-top: 2em;">
+
+      <div class="card">
         <span class="card-status status-complete">Complete</span>
         <h3>Alzheimer's Clinical Trials Data Pipeline</h3>
-        <p class="desc">Analyzing 4,200+ Alzheimer's trials from ClinicalTrials.gov, industry-sponsored drug trials show a clear "Phase 3 valley of death" — termination risk climbing to 35% before the field's research mix shifted toward observational studies. Built as a full BigQuery/dbt pipeline with tested, documented SQL models.</p>
+        <p class="desc">
+          A full ETL/ELT pipeline over ~4,200 Alzheimer's disease trials from
+          ClinicalTrials.gov: Python extraction → BigQuery → a tested,
+          documented dbt model (staging → intermediate → marts) → an
+          analytical SQL layer built on window functions and multi-step CTEs.
+        </p>
+        <p class="desc">
+          <strong>Key finding:</strong> industry-sponsored trials show a
+          clear "Phase 3 valley of death": termination risk climbs from
+          11.5% at Phase 1 to 35.3% at Phase 3, the field's most expensive
+          and definitive stage. Over the same period, the share of trials
+          that are classic phase-classified drug trials has fallen from
+          about 65% to 30%, a plausible structural response to that
+          failure pattern.
+        </p>
         <div class="tags">
-          <span class="tag">BigQuery</span>
-          <span class="tag">dbt</span>
-          <span class="tag">SQL</span>
+          <span class="tag">BigQuery</span><span class="tag">dbt</span><span class="tag">SQL</span>
         </div>
-        <div class="card-links"><a href="project-clinical-trials.html">Read the case study →</a> <a href="https://github.com/lmcbride053/clinical-alzheimers-trials" target="_blank" rel="noopener">GitHub →</a></div>
+        <div class="card-links">
+          <a href="project-clinical-trials.html">Read the case study →</a>
+          <a href="https://github.com/lmcbride053/clinical-alzheimers-trials" target="_blank" rel="noopener">GitHub →</a>
+        </div>
       </div>
 
-      <div class="card" data-tags="PySpark, Genomics, Python, Bioinformatics">
+      <div class="card">
         <span class="card-status status-complete">Complete</span>
         <h3>Recovering Rare Cell Populations at Scale</h3>
-        <p class="desc">An independently built PySpark pipeline recovers Cajal-Retzius cells from a ~90,000-cell cortical dataset at 93% recall against published ground truth — but a sampling experiment shows why recall alone is deceptive: precision collapses to under 5% at small sample sizes even while recall stays deceptively high.</p>
+        <p class="desc">
+          An independently built PySpark pipeline (QC, normalization, HVG
+          selection, PCA, clustering) tested against a published
+          single-cell RNA-seq dataset (Di Bella et al. 2021, Nature) with
+          real ground truth. Does it correctly recover a known rare
+          population, Cajal-Retzius cells, and how does recovery
+          reliability change with sample size?
+        </p>
+        <p class="desc">
+          <strong>Key finding:</strong> the full ~89,000-cell dataset
+          recovers Cajal-Retzius cells at 93.3% recall and 55.2%
+          precision. A sampling experiment shows recall alone is a
+          misleading signal at smaller scale: at 2,000–10,000 cells,
+          recall stays high (65–78%) while precision collapses to about
+          1.4%.
+        </p>
         <div class="tags">
-          <span class="tag">PySpark</span>
-          <span class="tag">Genomics</span>
+          <span class="tag">PySpark</span><span class="tag">Genomics</span><span class="tag">scikit-learn</span>
         </div>
-        <div class="card-links"><a href="project-pyspark.html">Read the case study →</a> <a href="#" target="_blank" rel="noopener">GitHub →</a></div>
+        <div class="card-links">
+          <a href="project-pyspark.html">Read the case study →</a>
+          <a href="#" target="_blank" rel="noopener">GitHub →</a>
+        </div>
       </div>
-      <div class="card" data-tags="Python, scikit-learn, XGBoost, Power BI, Data Science">
+
+      <div class="card">
         <span class="card-status status-complete">Complete</span>
         <h3>Predicting Churn, From Signal to Retention Decision</h3>
-        <p class="desc">A calibrated model with a cross-validation-locked decision threshold, stress-tested against real assumption uncertainty: model-based retention targeting beats contacting every customer at base-case assumptions, but only above a ~39% retention success rate — the finding a naive "best model wins" framing would miss.</p>
+        <p class="desc">
+          A churn model built with methodological rigor as the actual
+          point: leakage-safe preprocessing, a decision threshold locked
+          via cross-validation on training data only, a calibration
+          check, and subgroup error analysis, followed by a
+          retention-targeting simulation with an explicit sensitivity
+          analysis, visualized in Power BI.
+        </p>
+        <p class="desc">
+          <strong>Key finding:</strong> at base-case assumptions,
+          model-based targeting beats contacting every customer, but only
+          above a break-even retention success rate of about 39%. The
+          real answer isn't "the model works" — it's "the model works
+          under these specific, checkable conditions."
+        </p>
         <div class="tags">
-          <span class="tag">XGBoost</span>
-          <span class="tag">Power BI</span>
+          <span class="tag">XGBoost</span><span class="tag">Power BI</span>
         </div>
-        <div class="card-links"><a href="project-churn.html">Read the case study →</a> <a href="#" target="_blank" rel="noopener">GitHub →</a></div>
+        <div class="card-links">
+          <a href="project-churn.html">Read the case study →</a>
+          <a href="#" target="_blank" rel="noopener">GitHub →</a>
+        </div>
       </div>
 
     </div>
-    <p style="margin-top: 2em;"><a href="projects.html">See all projects →</a></p>
+  </div>
+</section>
+
+<!-- ============================== PUBLICATIONS ============================== -->
+<section class="block alt" id="publications">
+  <div class="container">
+    <span class="eyebrow">Publications &amp; Presentations</span>
+    <h2>Selected output</h2>
+
+    <div class="timeline-item">
+      <div class="when">2026 · HemaSphere</div>
+      <p>Access to diagnosis using liquid biopsy (ADLiB): identifying lymphoma in a tuberculosis-endemic setting. <em>Co-authored publication.</em></p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="when">2026 · ISCO, IMIM Barcelona</div>
+      <p>Computational tools to link cannabinoids to Alzheimer's disease. <em>Presentation.</em></p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="when">2024 · St. Olaf Mathematical Biology Symposium</div>
+      <p>Quantifying clonotype diversity within T-cell and B-cell acute lymphoblastic leukemia patients. <em>Presentation.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CONTACT ============================== -->
+<section class="block" id="contact">
+  <div class="container">
+    <span class="eyebrow">Contact</span>
+    <h2>Get in touch</h2>
+    <p class="lede" style="max-width: 55ch;">
+      Open to data scientist, data engineer, and bioinformatics roles.
+      The fastest way to reach me is email — the form below opens a
+      pre-filled message in your email client.
+    </p>
+
+    <div class="contact-grid">
+      <div>
+        <form id="contact-form" action="#" method="get">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="field">
+            <label for="email">Your email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Send message</button>
+        </form>
+      </div>
+
+      <div>
+        <ul class="contact-list">
+          <li><span class="k">Email</span><a href="mailto:lmcbride053@gmail.com">lmcbride053@gmail.com</a></li>
+          <li><span class="k">LinkedIn</span><a href="https://linkedin.com/in/liam-mcbride-2b413019b" target="_blank" rel="noopener">linkedin.com/in/liam-mcbride</a></li>
+          <li><span class="k">GitHub</span><a href="https://github.com/lmcbride053" target="_blank" rel="noopener">github.com/lmcbride053</a></li>
+          <li><span class="k">Based in</span>Barcelona, Spain</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
 <footer id="site-footer" class="site-footer"></footer>
 
 <script src="main.js"></script>
+<script>
+  // Static-site contact form: builds a mailto: link from the fields
+  // and opens the visitor's email client. No backend required.
+  document.getElementById('contact-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:lmcbride053@gmail.com?subject=${subject}&body=${body}`;
+  });
+</script>
 </body>
 </html>

@@ -1,30 +1,35 @@
 // ============================================================
 // Liam McBride — Portfolio
-// Shared site behavior: nav injection, mobile toggle,
-// animated hero scatter (UMAP-style), project tag filtering
+// Shared site behavior: sticky anchor nav with scroll-spy,
+// mobile toggle, animated hero scatter (UMAP-style)
 // ============================================================
 
-const NAV_LINKS = [
-  { href: "index.html", label: "Home" },
-  { href: "about.html", label: "About" },
-  { href: "projects.html", label: "Projects" },
-  { href: "contact.html", label: "Contact" },
+// Single-page site: all primary sections live on index.html.
+// Case-study pages (project-*.html) link back here via anchors.
+const SECTIONS = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
+  { id: "contact", label: "Contact" },
 ];
 
-function currentPage() {
+function isIndexPage() {
   const path = window.location.pathname.split("/").pop();
-  return path === "" ? "index.html" : path;
+  return path === "" || path === "index.html";
 }
 
 function renderHeader() {
   const mount = document.getElementById("site-header");
   if (!mount) return;
-  const page = currentPage();
 
-  const links = NAV_LINKS.map(
-    (l) =>
-      `<li><a href="${l.href}"${l.href === page ? ' class="active" aria-current="page"' : ""}>${l.label}</a></li>`
-  ).join("");
+  const onIndex = isIndexPage();
+  // On index: plain #section anchors (scroll-spy handles active state).
+  // On a case-study page: link back to index.html#section instead.
+  const links = SECTIONS.map((s) => {
+    const href = onIndex ? `#${s.id}` : `index.html#${s.id}`;
+    return `<li><a href="${href}" data-section="${s.id}">${s.label}</a></li>`;
+  }).join("");
 
   mount.innerHTML = `
     <div class="nav-row">
@@ -40,6 +45,40 @@ function renderHeader() {
     const open = list.classList.toggle("open");
     toggle.setAttribute("aria-expanded", String(open));
   });
+  // Close the mobile menu once a link is tapped, so it doesn't linger open.
+  list.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      list.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  if (onIndex) initScrollSpy();
+}
+
+// ---------- Scroll-spy: highlights the nav link for the section in view ----------
+function initScrollSpy() {
+  const navLinks = document.querySelectorAll(".nav-links a[data-section]");
+  const sections = SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean);
+  if (!navLinks.length || !sections.length) return;
+
+  const setActive = (id) => {
+    navLinks.forEach((link) => {
+      link.classList.toggle("active", link.dataset.section === id);
+    });
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+  setActive("home"); // sensible default before any scrolling occurs
 }
 
 function renderFooter() {
@@ -55,10 +94,13 @@ function renderFooter() {
         <a href="mailto:lmcbride053@gmail.com">Email</a>
       </span>
     </div>
+    <div class="footer-credit">Built with HTML, CSS &amp; JavaScript — no framework. Set in Newsreader &amp; IBM Plex. Hosted on GitHub Pages.</div>
   `;
 }
 
 // ---------- Hero scatter (UMAP/PCA-style animated cluster plot) ----------
+// Pine-dominant palette: three pine tones carry the motif, with a single
+// small clay accent cluster -- restraint over competing colors.
 function renderHeroScatter() {
   const el = document.getElementById("hero-scatter");
   if (!el) return;
@@ -70,9 +112,10 @@ function renderHeroScatter() {
   const width = 600;
   const height = 460;
   const clusters = [
-    { cx: 150, cy: 160, color: "#2F6F4E", n: 26, spread: 55 },
-    { cx: 430, cy: 120, color: "#A8481F", n: 20, spread: 45 },
-    { cx: 330, cy: 340, color: "#3A5A8C", n: 22, spread: 50 },
+    { cx: 150, cy: 160, color: "#2F6F4E", n: 26, spread: 55 }, // pine
+    { cx: 430, cy: 120, color: "#4E8A69", n: 20, spread: 45 }, // lighter pine
+    { cx: 330, cy: 340, color: "#1F4E36", n: 22, spread: 50 }, // pine-dark
+    { cx: 480, cy: 320, color: "#A8481F", n: 10, spread: 30 }, // clay, small accent only
   ];
 
   let svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
@@ -112,38 +155,8 @@ function renderHeroScatter() {
   el.innerHTML = svg;
 }
 
-// ---------- Project tag filtering (projects.html only) ----------
-function initProjectFilter() {
-  const bar = document.getElementById("filter-bar");
-  const cards = document.querySelectorAll("[data-tags]");
-  if (!bar || cards.length === 0) return;
-
-  const allTags = new Set();
-  cards.forEach((c) => c.dataset.tags.split(",").forEach((t) => allTags.add(t.trim())));
-
-  const tagButtons = ['<span class="label">Filter:</span>', `<button class="tag active" data-filter="all">All</button>`];
-  [...allTags].sort().forEach((t) => {
-    tagButtons.push(`<button class="tag" data-filter="${t}">${t}</button>`);
-  });
-  bar.innerHTML = tagButtons.join(" ");
-
-  bar.addEventListener("click", (e) => {
-    const btn = e.target.closest("button.tag");
-    if (!btn) return;
-    bar.querySelectorAll("button.tag").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    const filter = btn.dataset.filter;
-    cards.forEach((card) => {
-      const tags = card.dataset.tags.split(",").map((t) => t.trim());
-      const show = filter === "all" || tags.includes(filter);
-      card.style.display = show ? "" : "none";
-    });
-  });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   renderHeader();
   renderFooter();
   renderHeroScatter();
-  initProjectFilter();
 });

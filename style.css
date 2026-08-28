@@ -24,7 +24,7 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
 
 body {
   margin: 0;
@@ -39,7 +39,7 @@ body {
 img { max-width: 100%; display: block; }
 
 a {
-  color: var(--data-blue);
+  color: var(--pine);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
@@ -84,6 +84,9 @@ p { margin: 0 0 1em; color: var(--ink-soft); }
 .site-header {
   background: var(--pine);
   border-bottom: 1px solid var(--pine-dark);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .nav-row {
@@ -131,13 +134,14 @@ p { margin: 0 0 1em; color: var(--ink-soft); }
   color: rgba(255,255,255,0.85);
   text-decoration: none;
   padding: 8px 14px;
-  border-bottom: 2px solid transparent;
+  border-radius: var(--radius);
   display: block;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 .nav-links a:hover { color: #fff; }
 .nav-links a.active {
   color: #fff;
-  border-bottom-color: var(--clay);
+  background: rgba(255,255,255,0.16);
 }
 
 @media (max-width: 720px) {
@@ -428,6 +432,13 @@ section.block + section.block { border-top: 1px solid var(--border); }
   padding: 0 24px;
 }
 .footer-row a { color: var(--slate); }
+
+.footer-credit {
+  text-align: center;
+  margin-top: 14px;
+  opacity: 0.75;
+  font-size: 0.72rem;
+}
 
 /* ---------- Project case-study pages ---------- */
 .project-hero {

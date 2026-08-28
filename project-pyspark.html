@@ -17,22 +17,34 @@
   <div class="container">
     <div class="meta-row">
       <span class="card-status status-complete">Complete</span>
-      <span class="eyebrow" style="margin-bottom:0;">Bioinformatics · Computational Biology</span>
+      <span class="eyebrow" style="margin-bottom:0;">Data Engineering · Applied ML · Bioinformatics</span>
     </div>
     <h1>Recovering Rare Cell Populations at Scale</h1>
     <p class="lede" style="max-width: 62ch;">
-      Can an independently built pipeline — no shortcuts, validated at every
-      step against real ground truth — correctly rediscover a rare biological
-      population using nothing but marker genes and unsupervised clustering?
-      And does that reliability actually hold at the sample sizes real
-      single-cell studies use, or only at unusually large scale?
+      This pipeline was built from scratch and checked against real ground
+      truth at every step. Can it correctly find a rare cell population
+      using only marker genes and unsupervised clustering? And does that
+      hold at the sample sizes most single-cell studies actually use, or
+      only at this dataset's unusually large scale?
     </p>
+
+    <div class="callout" style="max-width: 62ch;">
+      <p><strong>Why this matters, in plain terms:</strong> judge this
+      pipeline by recall alone and it looks solid at almost any scale —
+      65–80% even on small subsamples. But precision at those same sizes
+      drops to about 1%. The candidate cluster is mostly noise, not signal.
+      Finding that took rebuilding the whole pipeline forty separate times
+      across five sample sizes, not trusting a single run. That's the
+      point of this project: a result that survives repeated testing, not
+      one that looks good once.</p>
+    </div>
 
     <dl class="readout">
       <div><dt>Cells analyzed</dt><dd>88,968 (of 98,047 raw)</dd></div>
       <div><dt>Genes</dt><dd>19,712</dd></div>
       <div><dt>Target population</dt><dd>Cajal-Retzius cells (~0.5% of cells)</dd></div>
       <div><dt>Full-scale detection</dt><dd>93.3% recall, 55.2% precision</dd></div>
+      <div><dt>Small-scale precision (2K–10K cells)</dt><dd>~1.4%</dd></div>
     </dl>
 
     <div class="project-links">
@@ -56,15 +68,15 @@
     <span class="eyebrow">The Question</span>
     <h2>Two questions, building on each other</h2>
     <p style="max-width: 68ch;">
-      <strong>First:</strong> can a pipeline built entirely from scratch — QC,
+      <strong>First:</strong> a pipeline built entirely from scratch — QC,
       normalization, feature selection, dimensionality reduction, clustering,
-      marker-based annotation — correctly recover a specific, known rare cell
-      population, validated against a published dataset's own ground-truth
-      labels rather than just producing a plausible-looking result?
-      <strong>Second, and the more interesting one:</strong> does that
-      reliability hold at the sample sizes typical of real single-cell
-      studies (a few thousand to tens of thousands of cells), or does it only
-      work at this dataset's unusually large full scale (~89,000 cells)?
+      marker-based annotation — has to correctly recover a specific, known
+      rare cell population, checked against a published dataset's own
+      ground-truth labels rather than a plausible-looking result.
+      <strong>Second, and more interesting:</strong> does that reliability
+      hold at realistic single-cell study sizes, a few thousand to tens of
+      thousands of cells? Or only at this dataset's unusually large full
+      scale of roughly 89,000?
     </p>
   </div>
 </section>
@@ -75,12 +87,12 @@
     <h2>SCP1290 — Di Bella et al. 2021, Nature</h2>
     <p style="max-width: 68ch;">
       Single-cell RNA sequencing of the developing mouse cerebral cortex,
-      spanning 13 developmental timepoints (E10 through P4). 98,047 cells
-      by 19,712 genes at load, chosen specifically because the study's own
-      published cell-type annotations — including Cajal-Retzius cells,
-      a genuinely rare population that plays a key early role in cortical
-      layering — provide real ground truth to validate against, not just a
-      plausible-looking cluster.
+      spanning 13 developmental timepoints from E10 through P4. 98,047
+      cells by 19,712 genes at load. I chose this dataset because its
+      published cell-type annotations, including Cajal-Retzius cells,
+      give real ground truth to validate against instead of a
+      plausible-looking cluster. Cajal-Retzius cells are a rare population
+      with an early, well-documented role in cortical layering.
     </p>
 
     <div class="figure-grid single">
@@ -88,16 +100,15 @@
     </div>
 
     <p style="max-width: 68ch;">
-      <strong>Architecture, deliberately split between distributed and local
-      computation:</strong> ingestion, QC aggregation, and highly-variable-gene
-      selection run in Spark across the full dataset — the genuinely
-      heavy, distributed-appropriate work. Once the feature-reduced data
-      comfortably fits in memory (88,968 cells × 1,560 features after HVG
-      selection, ~91.5% sparse), PCA and clustering run locally with
-      scikit-learn. That's a deliberate engineering decision, not a
-      shortcut — Spark ML's model-size guardrails made distributed PCA and
-      clustering actively counterproductive at this scale, and there's no
-      reason to fight that when the data no longer needs it.
+      <strong>Architecture:</strong> ingestion, QC aggregation, and
+      highly-variable-gene selection run in Spark across the full dataset,
+      since that's the genuinely heavy, distributed-appropriate work. Once
+      the feature-reduced data fits comfortably in memory (88,968 cells ×
+      1,560 features after HVG selection, about 91.5% sparse), PCA and
+      clustering move to scikit-learn running locally. Spark ML's
+      model-size guardrails made distributed PCA and clustering
+      counterproductive at this scale, so there was no reason to keep
+      fighting that once the data no longer needed it.
     </p>
   </div>
 </section>
@@ -109,67 +120,67 @@
 
     <div class="callout warn">
       <p><strong>The deposited matrix turned out to be already log-normalized,
-      not raw counts.</strong> Comparing computed per-cell totals against the
-      metadata's published <code>nCount_RNA</code> showed the zero-pattern
-      matched exactly but the magnitudes didn't (correlation only 0.797,
-      non-integer values) — the signature of a log1p transform already
-      applied. Re-normalizing on top of that would have silently
-      double-transformed the data: no error, just wrong numbers everywhere
-      downstream. Caught before it happened, not after.</p>
+      not raw counts.</strong> Computed per-cell totals matched the
+      metadata's published <code>nCount_RNA</code> in their zero-pattern,
+      but not in magnitude (correlation only 0.797, non-integer values) —
+      the signature of a log1p transform already applied. Re-normalizing
+      on top of that would have silently double-transformed the data. No
+      error message, just wrong numbers downstream, so this had to be
+      caught by checking the data rather than trusting it.</p>
     </div>
 
     <p style="max-width: 68ch;">
       Standard MAD-based thresholds (<code>n_mads=5.0</code>, within the
       typical 3–5 literature range) were cross-checked against the original
-      authors' own "Low quality cells" and "Doublet" labels — a direct test
-      of whether the threshold was actually catching anything real. It
-      caught <strong>zero of 6,399</strong> flagged cells. Tightened to
-      <code>n_mads=3.0</code> in response.
+      authors' own "Low quality cells" and "Doublet" labels, as a direct
+      test of whether the threshold caught anything real. It caught
+      <strong>zero of 6,399</strong> flagged cells, so it was tightened to
+      <code>n_mads=3.0</code>.
     </p>
 
     <div class="figure-grid single">
       <figure class="figure">
         <img src="assets/img/pyspark/qc_distributions_with_bounds.png" alt="Histograms of nCount_RNA, nFeature_RNA, and percent mitochondrial with MAD threshold bounds overlaid">
-        <figcaption>QC metric distributions with MAD-based bounds overlaid (red dashed lines) — the nFeature_RNA lower bound lines up with a real secondary bump in the distribution, a genuine low-quality subpopulation, not an arbitrary cut.</figcaption>
+        <figcaption>QC metric distributions with MAD-based bounds overlaid (red dashed lines). The nFeature_RNA lower bound lines up with a secondary bump in the distribution — a real low-quality subpopulation, not an arbitrary cutoff.</figcaption>
       </figure>
     </div>
 
     <p style="max-width: 68ch;">
-      A second diagnosis mattered more than the threshold tightening:
-      "Low quality" and "Doublet" are different failure modes. Doublets
-      (two cells captured as one) often look perfectly healthy by depth
-      metrics — what defines a doublet is a mixed transcriptional
-      signature, not shallow sequencing. Rather than tighten a depth
-      threshold further, the fix was switching to the dataset's own
-      purpose-built Scrublet doublet score directly.
+      A second diagnosis mattered more than the threshold change: "Low
+      quality" and "Doublet" are different failure modes. Doublets, two
+      cells captured as one, often look perfectly healthy by depth
+      metrics, since what defines a doublet is a mixed transcriptional
+      signature, not shallow sequencing. So instead of tightening a depth
+      threshold further, the fix was to switch to the dataset's own
+      Scrublet doublet score directly.
     </p>
 
     <p style="max-width: 68ch;">
-      A third QC dimension — housekeeping genes detected per cell
-      (<code>n_hkgene</code>) — was added only after testing whether it
-      actually separated flagged cells from the rest.
+      A third QC dimension, housekeeping genes detected per cell
+      (<code>n_hkgene</code>), was added only after testing whether it
+      separated flagged cells from the rest.
     </p>
 
     <div class="figure-grid single">
       <figure class="figure">
         <img src="assets/img/pyspark/hkgene_lowqual_histogram.png" alt="Histogram comparing housekeeping gene counts for cells labeled low quality versus everything else">
-        <figcaption>n_hkgene distribution: cells labeled "Low quality" (orange) skew visibly lower than everything else — real separation, confirming this as a genuine independent QC dimension worth adding.</figcaption>
+        <figcaption>n_hkgene distribution: cells labeled "Low quality" (orange) skew visibly lower than everything else. That separation is what confirmed this as a useful, independent QC dimension.</figcaption>
       </figure>
     </div>
 
     <p style="max-width: 68ch;">
-      Confirmed useful, it was then swept across a range of thresholds
+      Once confirmed useful, it was swept across a range of thresholds
       (2.0–6.0 MADs) to find the point that traded off junk-catch rate
-      against Cajal-Retzius retention explicitly, rather than picking a
-      threshold and hoping. Landed at 3.5 MADs: 54.8% combined catch rate
-      on flagged cells, 89.3% CR-cell retention (57 of 532 CR cells lost
-      in exchange for that filtering power).
+      against Cajal-Retzius retention, rather than picking a threshold and
+      hoping it worked. 3.5 MADs was the landing point: 54.8% combined
+      catch rate on flagged cells, and 89.3% CR-cell retention (57 of 532
+      CR cells lost in exchange for that filtering).
     </p>
 
     <div class="figure-grid single">
       <figure class="figure">
         <img src="assets/img/pyspark/hkgene_tradeoff_sweep.png" alt="Dual-axis plot showing junk-catch rate and CR retention rate across the n_hkgene MAD threshold sweep">
-        <figcaption>The actual trade-off: tightening n_hkgene catches more junk (blue) but costs CR-cell retention (red) — 3.5 MADs was chosen as the crossover point.</figcaption>
+        <figcaption>The trade-off in practice: tightening n_hkgene catches more junk (blue) but costs CR-cell retention (red). 3.5 MADs was chosen as the crossover point.</figcaption>
       </figure>
     </div>
 
@@ -190,42 +201,44 @@
     <span class="eyebrow">HVG Selection &amp; PCA</span>
     <h2>Feature selection and dimensionality reduction, each with a data-driven stopping point</h2>
     <p style="max-width: 68ch;">
-      Highly variable genes selected via binned dispersion z-score — the
-      classic Seurat/scanpy method — rather than an arbitrary top-N. Genes
-      are binned by mean expression first, since raw dispersion is
-      confounded with expression level (highly-expressed genes are almost
-      always more variable in absolute terms, which isn't the same as being
-      informative); a gene only counts as an HVG if its dispersion is an
-      outlier <em>relative to other genes at a similar expression level</em>.
-      1,560 genes selected at a z-score cutoff of 1.0.
+      Highly variable genes were selected with a binned dispersion
+      z-score, the standard Seurat/scanpy method, rather than an arbitrary
+      top-N cutoff. Genes are binned by mean expression first, because raw
+      dispersion is confounded with expression level: highly-expressed
+      genes are almost always more variable in absolute terms, which isn't
+      the same as being informative. A gene only counts as an HVG if its
+      dispersion is an outlier <em>relative to other genes at a similar
+      expression level</em>. 1,560 genes were selected at a z-score cutoff
+      of 1.0.
     </p>
 
     <div class="figure-grid single">
       <figure class="figure">
         <img src="assets/img/pyspark/hvg_dispersion_scatter.png" alt="Mean expression vs dispersion scatter plot, with highly variable genes highlighted">
-        <figcaption>Mean expression vs. dispersion (log-log). Right: highly variable genes (red) selected as dispersion outliers within their expression bin, not by raw dispersion alone.</figcaption>
+        <figcaption>Mean expression vs. dispersion (log-log). Highly variable genes (red, right panel) are selected as dispersion outliers within their expression bin, not by raw dispersion.</figcaption>
       </figure>
     </div>
 
     <p style="max-width: 68ch;">
-      PCA run via <code>TruncatedSVD</code> rather than textbook mean-centered
-      PCA — a deliberate choice for sparse data specifically. Mean-centering
-      would subtract a non-zero mean from every gene, turning every implicit
-      zero into a small non-zero value and destroying the matrix's sparsity
-      in the process. This is standard practice for sparse single-cell data,
-      the same reason tools like scanpy default to a similar approach.
+      PCA ran via <code>TruncatedSVD</code> instead of textbook
+      mean-centered PCA, chosen specifically because the data is sparse.
+      Mean-centering would subtract a non-zero mean from every gene,
+      turning every implicit zero into a small non-zero value and
+      destroying the matrix's sparsity. This is standard practice for
+      sparse single-cell data — scanpy defaults to a similar approach for
+      the same reason.
     </p>
 
     <div class="callout">
-      <p><strong>A subtlety worth stating rather than glossing over:</strong>
-      uncentered SVD can produce an anomalous first component dominated by
-      overall expression magnitude rather than genuine biological variation
-      — nearly every cell projects similarly onto that direction, giving it
-      a large singular value but low actual informativeness. Checked
-      directly (comparing PC1's explained variance against PC2's, which
-      should never be lower for correctly-ordered singular values) rather
-      than assumed away. 20 principal components carried forward to
-      clustering, explaining 42.2% of variance.</p>
+      <p><strong>One subtlety here:</strong> uncentered SVD can produce a
+      first component dominated by overall expression magnitude rather
+      than biological variation, since nearly every cell projects
+      similarly onto that direction. That gives it a large singular value
+      but little actual information. This was checked directly by
+      comparing PC1's explained variance against PC2's — for correctly
+      ordered singular values, PC1 should never explain less. 20 principal
+      components were carried forward to clustering, explaining 42.2% of
+      variance.</p>
     </div>
 
     <div class="figure-grid">
@@ -246,56 +259,58 @@
     <span class="eyebrow">Clustering &amp; Validation</span>
     <h2>Optimizing for one rare population, not general structure</h2>
     <p style="max-width: 68ch;">
-      A standard inertia/silhouette sweep favored <strong>k≈11–15</strong> —
+      A standard inertia/silhouette sweep favored <strong>k≈11–15</strong>,
       the best <em>overall</em> clustering structure across roughly 25
-      published cell types at once. But resolving one population that makes
-      up only ~0.5% of the dataset needs far finer resolution than whatever's
-      optimal for the dataset as a whole: at low k, a rare population simply
-      gets absorbed into whichever larger, coarser cluster it resembles most.
+      published cell types at once. But resolving a population that makes
+      up only about 0.5% of the dataset needs much finer resolution than
+      whatever's optimal for the dataset as a whole. At low k, a rare
+      population simply gets absorbed into whichever larger, coarser
+      cluster it resembles most.
     </p>
 
     <div class="figure-grid">
       <figure class="figure">
         <img src="assets/img/pyspark/elbow_silhouette.png" alt="Elbow plot of inertia and silhouette score across k values 5 to 39">
-        <figcaption>Inertia (elbow) and sampled silhouette score across k=5–39 — silhouette peaks at k=11 (0.236), the best resolution for the dataset's overall structure.</figcaption>
+        <figcaption>Inertia (elbow) and sampled silhouette score across k=5–39. Silhouette peaks at k=11 (0.236) — the best resolution for the dataset's overall structure.</figcaption>
       </figure>
     </div>
 
     <p style="max-width: 68ch;">
-      A systematic search measured this directly: for each k from 15 to 80,
-      cluster, score every cluster by mean expression of four Cajal-Retzius
-      markers (<em>Reln</em>, <em>Trp73</em>, <em>Calb2</em>, <em>Tbr1</em>),
-      and record precision/recall/F1 for the top-scoring cluster against the
-      published labels. F1 stayed weak (0.06–0.09) from k=15 through k=35,
-      jumped sharply at k=40, and peaked at <strong>k=75</strong>
-      (single cluster: 77.7% precision, 46.3% recall, F1=0.580) — a real,
-      evidence-based optimum for this specific question, not the generically
-      "best" k for the dataset overall.
+      A systematic search measured this directly. For each k from 15 to
+      80: cluster, score every cluster by mean expression of four
+      Cajal-Retzius markers (<em>Reln</em>, <em>Trp73</em>, <em>Calb2</em>,
+      <em>Tbr1</em>), and record precision/recall/F1 for the top-scoring
+      cluster against the published labels. F1 stayed weak (0.06–0.09)
+      from k=15 through k=35, jumped at k=40, and peaked at
+      <strong>k=75</strong> (single cluster: 77.7% precision, 46.3%
+      recall, F1=0.580). That's an evidence-based optimum for this
+      specific question, different from whatever counts as the "best" k
+      for the dataset overall.
     </p>
 
     <div class="figure-grid">
       <figure class="figure">
         <img src="assets/img/pyspark/k_search_cr_detection.png" alt="Line plot of precision, recall, and F1 for CR detection across k values 15 to 80">
-        <figcaption>CR detection quality vs. k — a clear, evidence-based peak at k=75, not a smooth or obvious trend.</figcaption>
+        <figcaption>CR detection quality vs. k. The peak at k=75 is sharp and specific, not part of a smooth trend.</figcaption>
       </figure>
       <figure class="figure">
         <img src="assets/img/pyspark/marker_heatmap.png" alt="Heatmap of mean marker gene expression across all 75 clusters">
-        <figcaption>Mean marker expression by cluster at k=75 — cluster 48 visibly lights up in the Calb2 and Reln columns specifically.</figcaption>
+        <figcaption>Mean marker expression by cluster at k=75. Cluster 48 stands out clearly in the Calb2 and Reln columns.</figcaption>
       </figure>
     </div>
 
     <div class="callout">
-      <p><strong>46.3% recall at k=75 was investigated, not accepted as a
-      ceiling.</strong> Checking whether the missed CR cells were scattered
-      randomly or concentrated in a second, nearby CR-enriched cluster found
-      the latter — combining the top-2 CR-scoring clusters substantially
-      recovered recall. The final answer is genuinely two related
-      subclusters, not one: <strong>precision 55.2%, recall 93.3%, F1=0.694</strong>
-      at full scale. Worth stating explicitly which trade-off this favors —
-      for a rare-cell discovery context, missing real CR cells is generally
-      worse than tolerating some false positives in an exploratory cluster,
-      which is why the combined-cluster answer is the one carried forward
-      rather than the higher-precision single cluster.</p>
+      <p><strong>46.3% recall at k=75 didn't get treated as a ceiling.</strong>
+      Checking whether the missed CR cells were scattered randomly or
+      concentrated in a second, nearby CR-enriched cluster found the
+      latter. Combining the top-2 CR-scoring clusters recovered
+      substantially more recall: <strong>precision 55.2%, recall 93.3%,
+      F1=0.694</strong> at full scale, from two related subclusters
+      instead of one. This trade-off is worth being explicit about: for
+      rare-cell discovery, missing real CR cells is generally worse than
+      tolerating some false positives in an exploratory cluster. That's
+      why the combined-cluster answer is the one carried forward, not the
+      higher-precision single cluster.</p>
     </div>
   </div>
 </section>
@@ -305,18 +320,20 @@
     <span class="eyebrow">Sampling Reliability</span>
     <h2>The headline finding: recall lies to you at small scale</h2>
     <p style="max-width: 68ch;">
-      The real question this project is built around: this dataset happens
-      to be unusually large for a single study. Does detecting a population
-      this rare stay reliable at the sample sizes most single-cell studies
-      actually work with — a few thousand to tens of thousands of cells —
-      or does it only work this well because of scale most studies don't have?
+      This dataset happens to be unusually large for a single study, which
+      raises the actual question this project is built around. Does
+      detecting a population this rare stay reliable at the sample sizes
+      most single-cell studies actually work with, a few thousand to tens
+      of thousands of cells? Or does it only work this well because of
+      scale most studies don't have?
     </p>
     <p style="max-width: 68ch;">
       Method: draw 8 independent random subsamples at each of five sizes,
-      re-run the <em>exact same</em> validated detection method (cluster,
-      score by CR markers, take the top-2 scoring clusters) on each — not a
-      simplified or different method, which would confound "does scale
-      matter" with "did the method change." <code>k</code> scales
+      and re-run the <em>exact same</em> validated detection method on
+      each — cluster, score by CR markers, take the top-2 scoring
+      clusters. Using a simplified or different method here would
+      confound "does scale matter" with "did the method change," so
+      nothing changes except the sample size. <code>k</code> scales
       proportionally with subsample size, using the same cells-per-cluster
       ratio as the full-scale k=75.
     </p>
@@ -338,21 +355,21 @@
     <div class="figure-grid single">
       <figure class="figure">
         <img src="assets/img/pyspark/sampling_reliability_curve.png" alt="Precision, recall, and F1 versus subsample size, with error bars across 8 replicates and a full-scale reference line">
-        <figcaption>The headline result: precision (left) climbs steadily but stays far below the full-scale line even at 40,000 cells, while recall (middle) looks deceptively close to full-scale by just 10,000-20,000 cells. F1 (right) tells the honest combined story.</figcaption>
+        <figcaption>The headline result: precision (left) climbs steadily but stays far below the full-scale line even at 40,000 cells, while recall (middle) looks close to full-scale by just 10,000–20,000 cells. F1 (right) combines both into the fuller picture.</figcaption>
       </figure>
     </div>
 
     <div class="callout warn">
-      <p><strong>Recall stays deceptively high at small sample sizes while
-      precision collapses.</strong> At 2,000–10,000 cells, recall holds at
-      65–78% — the method looks like it's successfully finding Cajal-Retzius
-      cells. But precision at those same sizes is only 1.4%: the "candidate"
-      cluster is really a broad, heterogeneous grab-bag that happens to
-      contain most of the true CR cells buried among a much larger number of
-      false positives. Anyone judging detection quality by recall alone —
-      a common shortcut — would conclude the method works fine at small
-      scale. It doesn't. This is the finding that matters most for anyone
-      actually running rare-cell studies at typical sample sizes.</p>
+      <p><strong>Recall stays high at small sample sizes while precision
+      collapses.</strong> At 2,000–10,000 cells, recall holds at 65–78%,
+      so the method looks like it's successfully finding Cajal-Retzius
+      cells. But precision at those same sizes is only 1.4%. The
+      "candidate" cluster is a broad, heterogeneous grab-bag that happens
+      to contain most of the true CR cells, buried among far more false
+      positives. Judging detection quality by recall alone, a common
+      shortcut, would suggest the method works fine at small scale. It
+      doesn't, and this is the finding that matters most for anyone
+      running rare-cell studies at typical sample sizes.</p>
     </div>
   </div>
 </section>
@@ -362,10 +379,10 @@
     <span class="eyebrow">Key Findings</span>
     <h2>What this project actually shows</h2>
     <ul style="max-width: 68ch; color: var(--ink-soft);">
-      <li>An independently built pipeline correctly rediscovers a genuinely rare (~0.5%) published cell population using only marker genes and unsupervised clustering — validated against real ground truth, not just a plausible-looking result.</li>
-      <li>Real methodological catches mattered as much as the final numbers: an already-normalized matrix that would have been silently double-transformed, a MAD threshold that literally caught 0% of author-flagged bad cells until recalibrated against evidence, and a doublet-detection fix based on understanding <em>why</em> depth-based filtering fundamentally can't catch doublets.</li>
-      <li>The clustering resolution that works best for the dataset overall (k≈11–15) is not the resolution that works best for isolating one rare population (k=75) — general clustering quality and rare-population resolution are different optimization targets, and conflating them would have missed the real answer.</li>
-      <li><strong>Recall alone is a misleading signal for rare-cell detection reliability.</strong> At realistic single-cell study sample sizes (thousands, not tens of thousands of cells), recall looks fine (65–80%) while precision collapses to ~1%, meaning the method is really returning broad, non-specific clusters rather than a genuine rare-population signal.</li>
+      <li>An independently built pipeline correctly recovers a rare (~0.5%) published cell population using only marker genes and unsupervised clustering, validated against real ground truth rather than a plausible-looking result.</li>
+      <li>Methodological catches mattered as much as the final numbers: an already-normalized matrix that would have been silently double-transformed, a MAD threshold that caught 0% of author-flagged bad cells until recalibrated against evidence, and a doublet-detection fix that came from understanding <em>why</em> depth-based filtering can't catch doublets in the first place.</li>
+      <li>The clustering resolution that works best for the dataset overall (k≈11–15) isn't the resolution that works best for isolating one rare population (k=75). General clustering quality and rare-population resolution are different optimization targets, and treating them as the same thing would have missed the answer.</li>
+      <li><strong>Recall alone is a misleading signal for rare-cell detection reliability.</strong> At realistic single-cell study sample sizes, a few thousand rather than tens of thousands of cells, recall looks fine (65–80%) while precision collapses to about 1%. The method is returning broad, non-specific clusters, not a genuine rare-population signal.</li>
     </ul>
   </div>
 </section>

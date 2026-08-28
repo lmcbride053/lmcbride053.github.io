@@ -21,11 +21,11 @@
     </div>
     <h1>Alzheimer's Clinical Trials Data Pipeline</h1>
     <p class="lede" style="max-width: 62ch;">
-      A full ETL pipeline over real clinical trial data — not a toy dataset —
+      A full ETL pipeline over real clinical trial data, not a toy dataset,
       built to answer a genuine research question: where does Alzheimer's
       drug development actually fail, and how has the field responded?
-      The SQL analytics layer is the showcase; the pipeline underneath it
-      is what makes the numbers trustworthy.
+      The SQL analytics layer is the showcase, and the pipeline underneath
+      it is what makes the numbers trustworthy.
     </p>
 
     <dl class="readout">
@@ -55,11 +55,11 @@
     <span class="eyebrow">The Question</span>
     <h2>Three questions, one narrative</h2>
     <p style="max-width: 68ch;">
-      Where does Alzheimer's drug development actually fail? Has the field's
-      research mix shifted in response? And are the trials that do run
-      getting faster or slower over time? Framed and answered directly
-      against a real, cloud-hosted pipeline — not assumed in advance, but
-      drafted only after seeing what the actual data supported.
+      Where does Alzheimer's drug development actually fail? Has the
+      field's research mix shifted in response? And are the trials that do
+      run getting faster or slower over time? These questions were framed
+      and answered against a real, cloud-hosted pipeline, drafted only
+      after seeing what the data supported, not assumed going in.
     </p>
   </div>
 </section>
@@ -70,12 +70,12 @@
     <h2>API → BigQuery → dbt → analytical SQL</h2>
     <p style="max-width: 68ch;">
       A Python extraction script pulls the full Alzheimer's-scoped dataset
-      from ClinicalTrials.gov's public API — deliberately requesting
+      from ClinicalTrials.gov's public API, deliberately requesting
       <strong>full study records</strong> rather than a field-filtered
-      subset, so the nested JSON stays genuinely messy and the dbt
-      staging layer's flattening work is a real exercise, not something
-      the extraction script already did. Landed in BigQuery as raw JSON,
-      then modeled through three dbt layers:
+      subset. That keeps the nested JSON genuinely messy, so the dbt
+      staging layer's flattening work is a real exercise rather than
+      something the extraction script already handled. It lands in
+      BigQuery as raw JSON, then gets modeled through three dbt layers:
     </p>
 
     <table class="data-table">
@@ -92,10 +92,11 @@
     <p style="max-width: 68ch;">
       dbt tests enforce <code>not_null</code> and <code>unique</code> on
       <code>nct_id</code> and category validity across all three layers.
-      A genuinely empty phases array (typically an observational study) is
+      A genuinely empty phases array, typically an observational study, is
       kept distinct from an array containing the literal string
-      <code>"NA"</code> (an interventional study with no applicable phase)
-      — different things, not collapsed into one "unknown" bucket.
+      <code>"NA"</code>, an interventional study with no applicable phase.
+      Those are different things, and collapsing them into one "unknown"
+      bucket would have lost that distinction.
     </p>
   </div>
 </section>
@@ -106,8 +107,8 @@
     <h2>Where do Alzheimer's trials actually fail?</h2>
     <p style="max-width: 68ch;">
       A window-function ranking of termination rate by sponsor class and
-      phase, restricted to trials with a known outcome (excluding still-active
-      trials, since their outcome isn't known yet).
+      phase, restricted to trials with a known outcome (excluding
+      still-active trials, since their outcome isn't known yet).
     </p>
 
     <table class="data-table">
@@ -130,18 +131,19 @@
     <div class="callout">
       <p><strong>A "Phase 3 valley of death," specifically for industry.</strong>
       Industry-sponsored termination risk climbs steadily from 11.5% at
-      Phase 1 to 35.3% at Phase 3 — the field's most expensive, most
-      statistically rigorous stage — before dropping at Phase 4 (explained
-      by survivorship: only already-approved drugs reach post-approval
-      trials). Academic trials show the <em>opposite</em> pattern, peaking
-      at Phase 1 (18.6%) — plausibly a different failure mode entirely:
-      grant funding lapsing rather than a drug failing to show efficacy.</p>
+      Phase 1 to 35.3% at Phase 3, the field's most expensive and
+      statistically rigorous stage, before dropping at Phase 4. That drop
+      is explained by survivorship: only already-approved drugs reach
+      post-approval trials. Academic trials show the <em>opposite</em>
+      pattern, peaking at Phase 1 (18.6%), plausibly a different failure
+      mode entirely — grant funding lapsing rather than a drug failing to
+      show efficacy.</p>
     </div>
 
     <p style="max-width: 68ch; font-size: 0.9rem; color: var(--slate);">
       <strong>Caveat:</strong> federal, NIH, and other-government sponsor
       classes have small sample sizes in several phase groups (as low as
-      n=5–13) — their rates are noisier and shouldn't be read with the same
+      n=5–13). Their rates are noisier and shouldn't be read with the same
       confidence as the Industry and Academic findings above.
     </p>
   </div>
@@ -182,28 +184,29 @@
     </table>
 
     <div class="callout">
-      <p><strong>The field has genuinely shifted toward observational research</strong>
-      — the phase-classified share of AD trials fell from a 60–67% peak
+      <p><strong>The field has shifted toward observational research.</strong>
+      The phase-classified share of AD trials fell from a 60–67% peak
       (2006–2009) to a sustained 25–36% from 2016 onward, with no real
       recovery. Non-phase (observational) trials also enroll 15–35× more
-      participants than interventional ones — intuitive once stated:
-      observational studies just track people, while interventional trials
-      require per-participant dosing and safety monitoring, keeping them
-      inherently smaller. NIH- and network-sponsored non-phase trials show
-      extremely long average durations (3,194 and 4,643 days — 8.7 and 12.7
-      years), consistent with the kind of decades-long longitudinal cohort
-      studies NIH is known for funding in this space (ADNI, the Alzheimer's
-      Disease Neuroimaging Initiative, is the well-known real-world example).</p>
+      participants than interventional ones. That makes sense once
+      stated: observational studies just track people, while
+      interventional trials require per-participant dosing and safety
+      monitoring, keeping them inherently smaller. NIH- and
+      network-sponsored non-phase trials show extremely long average
+      durations (3,194 and 4,643 days, or 8.7 and 12.7 years), consistent
+      with the decades-long longitudinal cohort studies NIH is known for
+      funding in this space — ADNI, the Alzheimer's Disease Neuroimaging
+      Initiative, is the well-known real-world example.</p>
     </div>
 
     <p style="max-width: 68ch; font-size: 0.9rem; color: var(--slate);">
-      <strong>A plausible connection to Question 1</strong> — worth labeling
-      clearly as interpretation, not something the data proves directly: if
-      industry drug trials keep failing hardest at the expensive, definitive
-      Phase 3 stage, a field-level shift toward foundational
-      biomarker/observational research — rather than repeated costly
-      late-phase drug attempts — is exactly the kind of response you'd
-      expect to see.
+      <strong>A plausible connection to Question 1,</strong> worth
+      labeling clearly as interpretation rather than something the data
+      proves directly: if industry drug trials keep failing hardest at
+      the expensive, definitive Phase 3 stage, a field-level shift toward
+      foundational biomarker and observational research is exactly the
+      kind of response you'd expect to see, instead of repeated costly
+      late-phase drug attempts.
     </p>
   </div>
 </section>
@@ -233,24 +236,26 @@
     </div>
 
     <div class="callout">
-      <p><strong>Trial duration has roughly halved since its 2010–2014 peak</strong>
-      — from 1,800–2,200 days down to 641–655 days by 2024–2025, with solid
-      sample sizes in recent years (n=218–252) giving real confidence in the
-      trend. This isn't just a side effect of the Question 2 mix shift:
-      checked directly, phase-classified and non-phase trials have similar
-      average durations within each sponsor type (877 vs. 857 days for
-      Industry, 1,272 vs. 1,201 for Academic) — the shrinking-duration trend
-      is a separate phenomenon. Plausible explanations worth floating, but
-      not proven here: biomarker-based patient enrichment (confirming
-      amyloid-positive status before enrollment) letting trials reach
-      conclusions faster with better-selected participants, or growing
-      regulatory/field urgency given Alzheimer's unmet need.</p>
+      <p><strong>Trial duration has roughly halved since its 2010–2014
+      peak,</strong> from 1,800–2,200 days down to 641–655 days by
+      2024–2025, with solid sample sizes in recent years (n=218–252)
+      giving real confidence in the trend. This isn't just a side effect
+      of the Question 2 mix shift. Checked directly, phase-classified and
+      non-phase trials have similar average durations within each sponsor
+      type (877 vs. 857 days for Industry, 1,272 vs. 1,201 for Academic),
+      so the shrinking-duration trend is a separate phenomenon. Two
+      plausible explanations, neither proven here: biomarker-based
+      patient enrichment (confirming amyloid-positive status before
+      enrollment) letting trials reach conclusions faster with
+      better-selected participants, or growing regulatory and field
+      urgency given Alzheimer's unmet need.</p>
     </div>
 
     <p style="max-width: 68ch; font-size: 0.9rem; color: var(--slate);">
       <strong>Caveat:</strong> early years (1981–2005) and the tail year
       (2027) have tiny sample sizes (n=1–4) and aren't filtered the same
-      way as the rest of this analysis — noisy, not to be read as signal.
+      way as the rest of this analysis. They're noisy and shouldn't be
+      read as signal.
     </p>
   </div>
 </section>
@@ -260,18 +265,18 @@
     <span class="eyebrow">Key Findings</span>
     <h2>A coherent story, not three disconnected numbers</h2>
     <p style="max-width: 68ch;">
-      Drug development struggles hardest at the expensive, definitive Phase
-      3 stage <strong>→</strong> the field has shifted toward more
+      Drug development struggles hardest at the expensive, definitive
+      Phase 3 stage <strong>→</strong> the field has shifted toward more
       observational and biomarker research over the same period
-      <strong>→</strong> and the trials that do run have gotten meaningfully
-      faster over the past decade. Each finding was drafted only after
-      seeing what the data actually supported, not assumed going in.
+      <strong>→</strong> and the trials that do run have gotten
+      meaningfully faster over the past decade. Each of these was drafted
+      only after seeing what the data supported, not assumed in advance.
     </p>
     <ul style="max-width: 68ch; color: var(--ink-soft);">
-      <li>Industry-sponsored Alzheimer's trials fail most often at Phase 3 (35.3% termination) — the field's most expensive, most statistically demanding stage — while academic trials fail earliest, at Phase 1 (18.6%), likely a funding rather than efficacy problem.</li>
-      <li>The phase-classified share of AD trials has fallen by roughly half since its 2006–2009 peak, with no recovery since 2016 — a genuine structural shift, not noise.</li>
-      <li>Median trial duration has roughly halved since 2010–2014, and that trend holds even after controlling for the phase-classification mix shift — a separate, real phenomenon.</li>
-      <li>Every finding is explicitly labeled by confidence level — flagged caveats on small-sample sponsor classes and sparse early/tail years, rather than presenting every number with the same certainty.</li>
+      <li>Industry-sponsored Alzheimer's trials fail most often at Phase 3 (35.3% termination), the field's most expensive and statistically demanding stage, while academic trials fail earliest, at Phase 1 (18.6%) — likely a funding problem rather than an efficacy one.</li>
+      <li>The phase-classified share of AD trials has fallen by roughly half since its 2006–2009 peak, with no recovery since 2016. That's a structural shift, not noise.</li>
+      <li>Median trial duration has roughly halved since 2010–2014, and that trend holds even after controlling for the phase-classification mix shift. It's a separate phenomenon.</li>
+      <li>Every finding is explicitly labeled by confidence level, with flagged caveats on small-sample sponsor classes and sparse early or tail years, rather than presenting every number with the same certainty.</li>
     </ul>
   </div>
 </section>
