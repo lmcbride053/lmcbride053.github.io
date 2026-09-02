@@ -22,9 +22,10 @@
         <h1>Liam McBride</h1>
         <p class="lede">
           Bioinformatician and data scientist working across computational
-          biology, data engineering, and applied data science: single-cell
-          genomics, clinical-trial data pipelines, and the statistical
-          modeling that turns raw data into a decision someone can act on.
+          biology, data engineering, and applied data science. I build
+          pipelines for single-cell genomics and clinical-trial data, and
+          the statistical models that turn raw data into something a
+          team can actually act on.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#projects">View projects</a>
@@ -74,12 +75,12 @@
         <h1>Statistical rigor, applied to biology</h1>
         <p class="lede" style="max-width: 60ch;">
           I work at the intersection of statistics, machine learning, and
-          real-world data infrastructure, building the pipelines that turn
-          noisy, high-dimensional data into findings a team can actually
-          use. My background is in biology and mathematics, and my current
-          work spans bioinformatics, data engineering, and applied data
-          science. The throughline is the same rigorous statistical
-          thinking, applied to messy data wherever it lives.
+          real-world data infrastructure — building the pipelines that
+          turn noisy, high-dimensional data into something a team can
+          actually use. My background is in biology and mathematics, and
+          right now my work spans bioinformatics, data engineering, and
+          applied data science. Whatever the field, I try to bring the
+          same rigorous statistical thinking to messy data.
         </p>
         <p style="max-width: 60ch;">
           In my free time I can be found playing clarinet in a local
@@ -199,38 +200,40 @@
     </dl>
 
     <p style="max-width: 68ch;">
-      My thesis, conducted in Dr. Arnau Busquets Garcia's lab at IMIM
+      My thesis, done in Dr. Arnau Busquets Garcia's lab at IMIM
       (Cell-Type Mechanisms in Normal and Pathological Behavior Research
-      Group), asked whether a cannabinoid compound could reverse molecular
-      and behavioral signs of Alzheimer's disease in a mouse model, and if
-      so, through which cell types and regulatory mechanisms.
+      Group), asked whether a cannabinoid compound could reverse
+      molecular and behavioral signs of Alzheimer's disease in a mouse
+      model — and if so, through which cell types and regulatory
+      mechanisms.
     </p>
     <p style="max-width: 68ch;">
       The study combined behavioral testing with single-cell RNA
       sequencing across the major cell populations of the hippocampus,
       comparing a well-established transgenic Alzheimer's mouse model
-      against wild-type controls, treated and untreated. I built the
-      computational analysis end to end: quality control and cell-type
-      annotation across roughly 190,000 cells, differential expression and
-      pathway-activity scoring across cell types, and gene regulatory
-      network reconstruction to identify which transcriptional programs
-      were disrupted by disease and responsive to treatment.
+      against wild-type controls, both treated and untreated. I built
+      the computational analysis end to end: quality control and
+      cell-type annotation across roughly 190,000 cells, differential
+      expression and pathway-activity scoring across cell types, and
+      gene regulatory network reconstruction to figure out which
+      transcriptional programs were disrupted by disease and responsive
+      to treatment.
     </p>
     <p style="max-width: 68ch;">
       The analysis pointed to a specific vascular cell population as an
-      unexpectedly central site of the disease's molecular impact. That's
-      not a cell type traditionally considered a primary driver in
-      Alzheimer's research. It also identified a small set of candidate
+      unexpectedly central site of the disease's molecular impact — not
+      a cell type traditionally considered a primary driver in
+      Alzheimer's research. It also turned up a small set of candidate
       transcriptional regulators that may explain how the treatment
       partially reverses that impact.
     </p>
 
     <div class="callout">
-      <p>This is unpublished, ongoing research. The more specific
-      findings, exact recovery figures and the individual transcription
-      factors and genes identified, are kept general here rather than
-      published ahead of the work itself. Happy to discuss the details
-      directly in conversation.</p>
+      <p>This is unpublished, ongoing research, so I'm keeping the more
+      specific findings — exact recovery figures, individual
+      transcription factors and genes — general here rather than
+      publishing them ahead of the work itself. Happy to talk through
+      the details in conversation.</p>
     </div>
   </div>
 </section>
@@ -284,10 +287,11 @@
     <span class="eyebrow">Selected Work</span>
     <h2>Three projects, built end to end</h2>
     <p style="max-width: 60ch;">
-      Chosen to cover distinct ground: computational biology, data
-      engineering, and applied data science, each with the full pipeline
-      behind it rather than just a model in a notebook. Every finding
-      below comes from real output, not a planned feature.
+      Three projects, chosen to cover different ground — computational
+      biology, data engineering, applied data science — each with the
+      full pipeline behind it rather than just a model in a notebook.
+      Every finding below came out of the actual analysis, not a plan
+      for what I hoped it would show.
     </p>
 
     <div class="grid" style="margin-top: 2em;">
@@ -296,19 +300,20 @@
         <span class="card-status status-complete">Complete</span>
         <h3>Alzheimer's Clinical Trials Data Pipeline</h3>
         <p class="desc">
-          A full ETL/ELT pipeline over ~4,200 Alzheimer's disease trials from
-          ClinicalTrials.gov: Python extraction → BigQuery → a tested,
-          documented dbt model (staging → intermediate → marts) → an
-          analytical SQL layer built on window functions and multi-step CTEs.
+          A full ETL/ELT pipeline over ~4,200 Alzheimer's disease trials
+          from ClinicalTrials.gov: Python extraction into BigQuery, a
+          tested and documented dbt model (staging → intermediate →
+          marts), then an analytical SQL layer built on window functions
+          and multi-step CTEs.
         </p>
         <p class="desc">
-          <strong>Key finding:</strong> industry-sponsored trials show a
-          clear "Phase 3 valley of death": termination risk climbs from
-          11.5% at Phase 1 to 35.3% at Phase 3, the field's most expensive
-          and definitive stage. Over the same period, the share of trials
-          that are classic phase-classified drug trials has fallen from
-          about 65% to 30%, a plausible structural response to that
-          failure pattern.
+          Industry-sponsored trials show a clear "Phase 3 valley of
+          death" — termination risk climbs from 11.5% at Phase 1 to
+          35.3% at Phase 3, the field's most expensive and definitive
+          stage. Over the same period, the share of trials that are
+          classic phase-classified drug trials has fallen from about 65%
+          to 30%, which looks like a plausible response to that failure
+          pattern.
         </p>
         <div class="tags">
           <span class="tag">BigQuery</span><span class="tag">dbt</span><span class="tag">SQL</span>
@@ -323,20 +328,19 @@
         <span class="card-status status-complete">Complete</span>
         <h3>Recovering Rare Cell Populations at Scale</h3>
         <p class="desc">
-          An independently built PySpark pipeline (QC, normalization, HVG
-          selection, PCA, clustering) tested against a published
-          single-cell RNA-seq dataset (Di Bella et al. 2021, Nature) with
-          real ground truth. Does it correctly recover a known rare
-          population, Cajal-Retzius cells, and how does recovery
-          reliability change with sample size?
+          A PySpark pipeline I built independently (QC, normalization,
+          HVG selection, PCA, clustering), tested against a published
+          single-cell RNA-seq dataset (Di Bella et al. 2021, Nature)
+          with real ground truth. Can it correctly recover a known rare
+          population, Cajal-Retzius cells, and how does that reliability
+          change with sample size?
         </p>
         <p class="desc">
-          <strong>Key finding:</strong> the full ~89,000-cell dataset
-          recovers Cajal-Retzius cells at 93.3% recall and 55.2%
-          precision. A sampling experiment shows recall alone is a
-          misleading signal at smaller scale: at 2,000–10,000 cells,
-          recall stays high (65–78%) while precision collapses to about
-          1.4%.
+          The full ~89,000-cell dataset recovers Cajal-Retzius cells at
+          93.3% recall and 55.2% precision. A sampling experiment shows
+          recall alone is a misleading signal at smaller scale: at
+          2,000–10,000 cells, recall stays high (65–78%) while precision
+          collapses to about 1.4%.
         </p>
         <div class="tags">
           <span class="tag">PySpark</span><span class="tag">Genomics</span><span class="tag">scikit-learn</span>
@@ -351,19 +355,19 @@
         <span class="card-status status-complete">Complete</span>
         <h3>Predicting Churn, From Signal to Retention Decision</h3>
         <p class="desc">
-          A churn model built with methodological rigor as the actual
-          point: leakage-safe preprocessing, a decision threshold locked
-          via cross-validation on training data only, a calibration
-          check, and subgroup error analysis, followed by a
-          retention-targeting simulation with an explicit sensitivity
-          analysis, visualized in Power BI.
+          A churn model where methodological rigor is the actual point:
+          leakage-safe preprocessing, a decision threshold locked via
+          cross-validation on training data only, a calibration check,
+          and subgroup error analysis. Then a retention-targeting
+          simulation with an explicit sensitivity analysis, visualized
+          in Power BI.
         </p>
         <p class="desc">
-          <strong>Key finding:</strong> at base-case assumptions,
-          model-based targeting beats contacting every customer, but only
-          above a break-even retention success rate of <strong>about
-          39%</strong>. The real answer isn't "the model works" — it's
-          "the model works under these specific, checkable conditions."
+          At base-case assumptions, model-based targeting beats
+          contacting every customer, but only above a break-even
+          retention success rate of <strong>about 39%</strong>. The real
+          answer isn't "the model works" — it's "the model works under
+          these specific, checkable conditions."
         </p>
         <div class="tags">
           <span class="tag">XGBoost</span><span class="tag">Power BI</span>
@@ -408,8 +412,8 @@
     <h2>Get in touch</h2>
     <p class="lede" style="max-width: 55ch;">
       Open to data scientist, data engineer, and bioinformatics roles.
-      The fastest way to reach me is email — the form below opens a
-      pre-filled message in your email client.
+      Email is the fastest way to reach me — the form below just opens
+      a pre-filled message in your email client.
     </p>
 
     <div class="contact-grid">

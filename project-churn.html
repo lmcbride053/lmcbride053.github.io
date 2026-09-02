@@ -21,10 +21,10 @@
     </div>
     <h1>Predicting Churn, From Signal to Retention Decision</h1>
     <p class="lede" style="max-width: 62ch;">
-      Can churn be predicted accurately enough to support targeted retention,
-      and under what economic conditions does acting on those predictions
-      beat simpler alternatives? A model is only half the answer. This
-      project treats the decision built on top of it as the actual point.
+      Can churn be predicted well enough to actually act on, and under
+      what conditions does acting on it beat doing something simpler? A
+      model alone doesn't answer that. Most of the work in this project
+      went into the decision layered on top of it, not the model itself.
     </p>
 
     <dl class="readout">
@@ -56,12 +56,12 @@
     <span class="eyebrow">The question</span>
     <h2>Two questions, not one</h2>
     <p style="max-width: 68ch;">
-      <strong>Data science question:</strong> can customers at elevated churn
-      risk be identified reliably? <strong>Decision-science question:</strong>
-      can those predictions improve a retention strategy, and does that hold
-      up once the assumptions behind it are stated honestly? Most churn
-      projects stop at the first question. This one spends most of its
-      effort on the second.
+      <strong>Data science question:</strong> can I reliably identify
+      customers at elevated churn risk? <strong>Decision-science
+      question:</strong> if I can, does that actually improve a retention
+      strategy once I'm honest about the assumptions behind it? Most
+      churn projects stop at the first question and call it done. I spent
+      most of my time on the second one.
     </p>
   </div>
 </section>
@@ -72,21 +72,22 @@
     <h2>Where the signal actually is</h2>
     <p style="max-width: 68ch;">
       7,043 Telco customers, minus 11 dropped for missing billing data
-      (customers with zero tenure who'd never been billed), leaving 7,032.
-      Every relationship below was tested statistically rather than
-      eyeballed: Mann-Whitney U for the continuous variables, since churned
-      and stayed distributions aren't normal and a t-test would be the
-      wrong tool, chi-square for categorical associations, and Cramér's V
-      to rank those associations on a common 0–1 scale.
+      (zero-tenure customers who'd never actually been billed), leaves
+      7,032. I tested every relationship below statistically instead of
+      eyeballing a chart: Mann-Whitney U for the continuous variables
+      (churned and stayed distributions aren't normal, so a t-test would
+      be the wrong call), chi-square for categorical associations, and
+      Cramér's V to put those associations on a common 0–1 scale so I
+      could rank them.
     </p>
 
     <div class="callout">
-      <p><strong>Tenure and price are the strongest individual predictors.</strong>
-      Median tenure among churned customers is 10 months, versus 38 months
-      among those who stayed (p = 6.0×10⁻²¹¹). Median monthly charges:
-      $79.65 versus $64.45 (p = 8.5×10⁻⁵⁴). Both gaps are large by any
-      practical standard — this isn't just statistical significance
-      showing up on a big sample.</p>
+      <p>Tenure and price turned out to be the strongest individual
+      predictors. Median tenure among churned customers is 10 months,
+      versus 38 months for customers who stayed (p = 6.0×10⁻²¹¹). Median
+      monthly charges: $79.65 versus $64.45 (p = 8.5×10⁻⁵⁴). Both gaps
+      are large in practical terms too, not just statistically
+      significant because the sample is big.</p>
     </div>
 
     <div class="figure-grid">
@@ -123,31 +124,33 @@
     <span class="eyebrow">Feature Engineering</span>
     <h2>Built to survive contact with a train/test split</h2>
     <p style="max-width: 68ch;">
-      Every engineered feature here uses fixed rules or per-row arithmetic:
-      tenure buckets, spend-per-tenure ratio, a corrected service count, a
-      security/support flag, an electronic-check flag. None of it depends
-      on a dataset-level statistic, so it's safe to compute before any
-      split. Two things that do need a statistic, a spend-median threshold
-      and one-hot encoding, are fit on training data only and applied
-      unchanged to test.
+      Every engineered feature uses fixed rules or per-row arithmetic —
+      tenure buckets, spend-per-tenure ratio, a corrected service count,
+      a security/support flag, an electronic-check flag. None of it
+      depends on a dataset-level statistic, so it's safe to compute
+      before splitting the data. The two things that do need a
+      statistic, a spend-median threshold and one-hot encoding, get fit
+      on training data only and then applied unchanged to test.
     </p>
 
     <div class="callout warn">
-      <p><strong>A bug worth documenting, not hiding:</strong> the first
-      version of a "number of services" feature counted across all 8
-      service columns, including phone service. That conflated "has
-      internet, declined every add-on" with "has no internet at all," and
-      broke monotonicity: churn rate went 0.44 → 0.21 → 0.33 → 0.36 as the
-      count increased. Restricting the count to internet-dependent
-      add-ons, computed only for customers who have internet, fixed it.
-      Churn rate now drops cleanly from 52% at 0 services to 5% at 6.</p>
+      <p>I found a bug worth writing up rather than quietly fixing. The
+      first version of my "number of services" feature counted across
+      all 8 service columns, phone service included. That conflated "has
+      internet, declined every add-on" with "has no internet at all,"
+      and it broke monotonicity — churn rate went 0.44 → 0.21 → 0.33 →
+      0.36 as the count went up, which makes no sense for a feature
+      that's supposed to signal loyalty. Restricting the count to
+      internet-dependent add-ons, and only computing it for customers
+      who actually have internet, fixed it. Churn rate now drops cleanly
+      from 52% at 0 services to 5% at 6.</p>
     </div>
 
     <p style="max-width: 68ch;">
-      <code>gender</code> and <code>PhoneService</code> were dropped
-      entirely rather than encoded. The EDA's own Cramér's V ranking found
-      both at essentially zero (0.008 and 0.011), so keeping them would
-      only have added noise features for the model to learn to ignore.
+      I dropped <code>gender</code> and <code>PhoneService</code>
+      entirely instead of encoding them. The EDA's Cramér's V ranking
+      already put both at essentially zero (0.008 and 0.011), so keeping
+      them would only give the model noise to learn to ignore.
     </p>
 
     <div class="figure-grid single">
@@ -176,14 +179,14 @@
       </tbody>
     </table>
     <p style="max-width: 68ch;">
-      All three models clear the baseline by a wide margin and cluster
-      tightly together. Logistic Regression edges out XGBoost on AUC-ROC
-      here (0.837 vs. 0.828), which matters: the simplest,
-      fully-interpretable model isn't meaningfully worse than the more
-      complex ones on this dataset. XGBoost was carried forward for the
-      threshold-locking and SHAP interpretation below, mainly to
-      demonstrate that tooling. The plain conclusion is that model
-      complexity bought very little here.
+      All three models clear the baseline by a wide margin and end up
+      clustered tightly together. Logistic Regression actually edges out
+      XGBoost on AUC-ROC (0.837 vs. 0.828), which I think matters: the
+      simplest, fully-interpretable model isn't meaningfully worse than
+      the more complex ones here. I still carried XGBoost forward for
+      the threshold-locking and SHAP work below, mostly to show that
+      tooling, but the honest takeaway is that model complexity bought
+      very little on this dataset.
     </p>
 
     <div class="figure-grid">
@@ -198,13 +201,15 @@
     </div>
 
     <div class="callout">
-      <p><strong>The threshold was locked without ever touching the test set.</strong>
-      5-fold cross-validated out-of-fold predictions on training data only
-      were swept across thresholds, and the one maximizing F1 was picked
-      (0.50, OOF F1 = 0.631). The test set was then used exactly once, for
-      a single final evaluation. This fixes a leakage bug from an earlier
-      draft, which had chosen the threshold by maximizing F1 <em>on the
-      test set itself</em>, then reported results on that same test set.</p>
+      <p>I locked the threshold without ever touching the test set. I
+      swept 5-fold cross-validated out-of-fold predictions on training
+      data only across a range of thresholds and picked the one that
+      maximized F1 (0.50, OOF F1 = 0.631). The test set got used exactly
+      once after that, for a single final evaluation. This fixes a
+      leakage bug from an earlier draft, where I'd picked the threshold
+      by maximizing F1 <em>on the test set itself</em>, then reported
+      results on that same test set — a mistake I only caught by
+      re-reading my own pipeline critically.</p>
     </div>
 
     <div class="figure-grid">
@@ -219,9 +224,10 @@
     </div>
 
     <p style="max-width: 68ch;">
-      Calibration matters because these probabilities drive real targeting
-      decisions below. A predicted 70% churn risk should mean roughly 70%
-      of similarly-scored customers actually churn.
+      Calibration matters here because these probabilities drive real
+      targeting decisions later on. If the model says 70% churn risk,
+      that should mean roughly 70% of customers scored that way actually
+      churn — not just that they rank higher than everyone else.
     </p>
     <div class="figure-grid single">
       <figure class="figure">
@@ -267,15 +273,16 @@
     </div>
 
     <div class="callout warn">
-      <p><strong>The model's blind spot is exactly where its strongest signal lives.</strong>
-      Subgroup error analysis on the locked-threshold predictions shows
-      the false-negative rate (missed churners) climbing from 10.7% for
-      0–6 month customers to 58.3% for 4+ year customers. Two-year
-      contract holders have a 100% false-negative rate: the model almost
-      never flags anyone in that group as high-risk, because long tenure
-      and long contracts are such strong loyalty signals that it misses
-      the rare customer there who does leave. This isn't a bug. It's a
-      defensible limitation, stated plainly rather than glossed over.</p>
+      <p>The model's blind spot sits right on top of its strongest
+      signal. Subgroup error analysis on the locked-threshold predictions
+      shows the false-negative rate (missed churners) climbing from
+      10.7% for 0–6 month customers up to 58.3% for 4+ year customers.
+      Two-year contract holders get missed 100% of the time — the model
+      almost never flags anyone in that group as high-risk, because long
+      tenure and long contracts are such strong loyalty signals that it
+      can't see the rare customer in that bucket who actually leaves.
+      That's not a bug I need to fix quietly. It's a real limitation of
+      the approach, and I'd rather say so than pretend it isn't there.</p>
     </div>
   </div>
 </section>
@@ -285,12 +292,12 @@
     <span class="eyebrow">Retention Strategy</span>
     <h2>From a probability to a targeting decision</h2>
     <p style="max-width: 68ch;">
-      Six strategies compared: contact nobody, contact everyone, the
-      model's locked threshold, and three fixed-capacity strategies
-      (top 5% / 10% / 20% by predicted risk). The fixed-capacity strategies
-      reflect the realistic shape of an actual retention campaign, where a
-      team usually has budget for <em>N</em> outreach calls, not "however
-      many the threshold happens to flag."
+      I compared six strategies: contact nobody, contact everyone, the
+      model's locked threshold, and three fixed-capacity strategies (top
+      5% / 10% / 20% by predicted risk). The fixed-capacity strategies
+      exist because that's how a real retention campaign actually works
+      — a team usually has budget for <em>N</em> outreach calls, not
+      "however many the threshold happens to flag that month."
     </p>
 
     <table class="data-table">
@@ -315,10 +322,11 @@
     </div>
 
     <p style="max-width: 68ch;">
-      Business assumptions are stated explicitly rather than buried inside
-      the numbers: <strong>CLV = $1,200</strong>, <strong>offer cost =
-      $50</strong>, <strong>retention success rate = 30%</strong>. These
-      are illustrative figures, not real company data.
+      I've stated the business assumptions explicitly instead of burying
+      them in the numbers: <strong>CLV = $1,200</strong>,
+      <strong>offer cost = $50</strong>, <strong>retention success rate
+      = 30%</strong>. These are illustrative figures I picked, not real
+      company data.
     </p>
 
     <div class="figure-grid single">
@@ -329,13 +337,14 @@
     </div>
 
     <div class="callout">
-      <p><strong>The conclusion isn't robust to every assumption, and
-      that's the actual finding.</strong> The sensitivity analysis shows
-      "contact everyone" winning instead when CLV rises to $1,600, when
-      offer cost drops to $30, or when the retention success rate reaches
-      40%. The break-even retention rate, holding CLV and cost at base
-      case, is <strong>~39%</strong>: below it, blanket contact wins, and
-      above it, targeted contact wins.</p>
+      <p>The conclusion doesn't hold under every assumption, and I think
+      that's the actual finding here, not a weakness of the analysis.
+      Run the sensitivity analysis and "contact everyone" wins instead
+      once CLV rises to $1,600, offer cost drops to $30, or the
+      retention success rate reaches 40%. Solving for the break-even
+      point directly, holding CLV and cost at base case, gives
+      <strong>~39%</strong>: below that retention rate, blanket contact
+      wins; above it, targeted contact wins.</p>
     </div>
 
     <div class="figure-grid">
@@ -356,11 +365,11 @@
     <span class="eyebrow">Key Findings</span>
     <h2>What this project actually shows</h2>
     <ul style="max-width: 68ch; color: var(--ink-soft);">
-      <li>Tenure and monthly charges are the two strongest individual predictors of churn, both by a wide statistical margin.</li>
-      <li>Three well-tuned models land within 1 point of each other on AUC-ROC. The simplest one, Logistic Regression, is competitive with XGBoost here, not clearly worse.</li>
-      <li>A cross-validation-locked threshold, chosen without touching test data, is the methodological difference between a defensible result and an optimistically biased one.</li>
-      <li>The model's biggest blind spot, long-tenure and long-contract churners, is exactly where its strongest predictive signal also lives. That's a stated limitation, not a hidden one.</li>
-      <li>Model-based retention targeting beats contacting every customer, but only above a ~39% retention success rate. Below that, simpler blanket outreach wins. The claim here is conditional, not absolute.</li>
+      <li>Tenure and monthly charges are the two strongest individual predictors of churn, both with a wide statistical margin behind them.</li>
+      <li>Three well-tuned models land within a point of each other on AUC-ROC. Logistic Regression, the simplest one, holds its own against XGBoost rather than losing to it.</li>
+      <li>Locking the threshold via cross-validation, without ever touching test data, is the difference between a result I can defend and one that's quietly optimistic.</li>
+      <li>The model's biggest blind spot — long-tenure, long-contract churners — sits right where its predictive signal is strongest. I'd rather state that than leave it for someone else to find.</li>
+      <li>Model-based retention targeting beats contacting every customer, but only above roughly a 39% retention success rate. Below that, plain blanket outreach wins. It's a conditional result, not an absolute one.</li>
     </ul>
   </div>
 </section>
