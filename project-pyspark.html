@@ -35,9 +35,9 @@
       on small subsamples. But precision at those same sizes drops to
       about 1%. The candidate cluster is mostly noise. I only found that
       by rebuilding the whole pipeline forty separate times across five
-      sample sizes instead of trusting a single run, which is really the
-      point of this project — a result that survives repeated testing,
-      not one that just looks good once.</p>
+      sample sizes instead of trusting a single run. That's really the
+      point of this project: does the result hold up under repeated
+      testing, or did it just look good once?</p>
     </div>
 
     <dl class="readout">
@@ -116,7 +116,7 @@
 <section class="block" id="qc">
   <div class="container">
     <span class="eyebrow">Quality Control</span>
-    <h2>A real catch, and QC thresholds calibrated against evidence, not defaults</h2>
+    <h2>Calibrating QC thresholds against evidence instead of guessing</h2>
 
     <div class="callout warn">
       <p>The deposited matrix turned out to already be log-normalized,
@@ -259,7 +259,7 @@
 <section class="block" id="clustering">
   <div class="container">
     <span class="eyebrow">Clustering &amp; Validation</span>
-    <h2>Optimizing for one rare population, not general structure</h2>
+    <h2>Tuning resolution for one rare population</h2>
     <p style="max-width: 68ch;">
       A standard inertia/silhouette sweep favored <strong>k≈11–15</strong>,
       the best <em>overall</em> clustering structure across roughly 25
